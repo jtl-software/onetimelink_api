@@ -1,0 +1,6 @@
+/.idea
+/vendor/
+/build/*
+/tests/integration-tests/_support/_generated/*
+/tests/integration-tests/_output/*
+!/tests/integration-tests/_output/.gitkeep

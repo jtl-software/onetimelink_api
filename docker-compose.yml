@@ -1,0 +1,36 @@
+version: "3.3"
+services:
+
+    otl-webserver:
+      image: nginx:alpine
+      container_name: webserver
+      working_dir: /application
+      volumes:
+          - .:/application
+          - ./var/data:/application/data
+          - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      ports:
+       - "8080:80"
+
+    otl-php-fpm:
+      build: docker/php-fpm
+      container_name: php-fpm
+      working_dir: /application
+      environment:
+        XDEBUG_CONFIG: remote_host="172.17.0.1"
+      volumes:
+        - .:/application/source
+        - ./var/log:/application/log
+        - ./var/data:/application/data
+        - ./var/user:/application/user
+        - ./var/users:/application/users
+        - ./var/tmp:/application/tmp
+        - ./var/db:/application/db
+        - ./docker/php-fpm/php-ini-overrides.ini:/etc/php/7.1/fpm/conf.d/99-overrides.ini
+
+    olt-mail:
+      image: mailhog/mailhog:latest
+      container_name: mailhog
+      ports:
+        - "1025:1025"
+        - "8081:8025"

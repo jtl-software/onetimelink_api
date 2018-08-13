@@ -1,0 +1,13 @@
+# Ignore everything
+*
+
+# But not these files...
+!.gitignore
+!data
+!data/.gitkeep
+!user
+!user/.gitkeep
+!users
+!users/.gitkeep
+!tmp
+!tmp/.gitkeep
