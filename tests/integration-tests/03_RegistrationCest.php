@@ -21,7 +21,8 @@ class RegistrationCest
 
     public function tryRegistration(ApiTester $I)
     {
-        $this->email = uniqid('email', true) . '@example.com';
+        $mailHost = getenv('I9N_EMAIL_HOST') ?: 'example.com';
+        $this->email = uniqid('email', true) . '@' . $mailHost;
         $this->password = uniqid('password', true);
 
         $I->haveHttpHeader('Content-Type', 'application/json');

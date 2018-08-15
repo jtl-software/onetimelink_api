@@ -25,7 +25,8 @@ class UserCest extends AuthenticationCest
         $I->wantTo('Create new User');
 
         $password = uniqid('newpassword', true);
-        $this->createdUserEmail = uniqid('email', true) . '@example.com';
+        $mailHost = getenv('I9N_EMAIL_HOST') ?: 'example.com';
+        $this->createdUserEmail = uniqid('email', true) . '@' . $mailHost;
 
         $I->amHttpAuthenticated('otl-tester@jtl-software.com', 'this-is-a-passw0rd');
         $I->haveHttpHeader('Content-Type', 'application/json');
