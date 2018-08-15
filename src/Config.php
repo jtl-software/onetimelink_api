@@ -297,4 +297,9 @@ class Config
     {
         return $this->config['log-format'];
     }
+
+    public function getUserActivationSecret(): string
+    {
+        return $this->config['user-activation-secret'];
+    }
 }

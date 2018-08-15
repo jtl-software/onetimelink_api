@@ -181,6 +181,7 @@ return [
     'allow-user-with-mail' => '/.*@(jtl-software|example)\.com$/',
 
     'tmp_dir' => '/application/data',
+    'user-activation-secret' => '##secret##',
 
 
 ];

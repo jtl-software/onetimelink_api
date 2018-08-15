@@ -31,7 +31,8 @@ class RegistrationCest
             'password' => $this->password
         ]);
 
-        $this->activationHash = time() . sha1(time() . $this->email);
+        $userActivationSecret = getenv('I9N_ACTIVATION_SECRET') ?: '##secret##';
+        $this->activationHash = sha1($userActivationSecret . $this->email);
         $I->seeResponseCodeIs(201);
     }
 

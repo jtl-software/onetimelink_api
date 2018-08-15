@@ -24,6 +24,9 @@ return [
     # User Interface URL - required when sending mails
     # 'user-interface-host' => 'http://127.0.0.1:3000',
 
+    # Secret key used for creating user activation hashes
+    # 'user-activation-secret' => '',
+
     ###################################################################
     # Notification Settings
     ###################################################################
