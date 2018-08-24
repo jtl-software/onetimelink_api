@@ -26,13 +26,14 @@ class RegistrationCest
         $this->password = uniqid('password', true);
 
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST('/user/add', [
+        $I->sendPOST('/user/add', json_encode([
             'email' => $this->email,
             'password' => $this->password
-        ]);
+        ]));
 
         $userActivationSecret = getenv('I9N_ACTIVATION_SECRET') ?: '##secret##';
-        $this->activationHash = sha1($userActivationSecret . $this->email);
+        # $this->activationHash = sha1($userActivationSecret . $this->email);
+        $this->activationHash = time() . sha1(time() . $this->email);
         $I->seeResponseCodeIs(201);
     }
 

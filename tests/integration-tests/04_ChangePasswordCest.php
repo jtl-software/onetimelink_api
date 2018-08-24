@@ -25,10 +25,10 @@ class ChangePasswordCest extends RegistrationCest
 
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->amHttpAuthenticated($this->email, $this->password);
-        $I->sendPOST('/user/update', [
+        $I->sendPOST('/user/update', json_encode([
             'oldPassword' => $this->password,
             'newPassword' => $this->newPassword
-        ]);
+        ]));
         $I->seeResponseCodeIs(200);
     }
 

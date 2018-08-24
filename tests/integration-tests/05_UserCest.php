@@ -30,10 +30,10 @@ class UserCest extends AuthenticationCest
 
         $I->amHttpAuthenticated('otl-tester@jtl-software.com', 'this-is-a-passw0rd');
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST('/user/add', [
+        $I->sendPOST('/user/add', json_encode([
                 'email' => $this->createdUserEmail,
                 'password' => $password,
-            ]
+            ])
         );
         $I->seeResponseCodeIs(201);
     }
@@ -51,11 +51,11 @@ class UserCest extends AuthenticationCest
 
         $I->amHttpAuthenticated('tester', 'this-is-a-passw0rd');
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST('/user/add', [
+        $I->sendPOST('/user/add', json_encode([
                 'username' => $username,
                 'password' => $password,
                 'email' => $this->notCreatedUserEmail
-            ]
+            ])
         );
         $I->seeResponseCodeIs(403);
     }

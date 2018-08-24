@@ -23,7 +23,7 @@ class GuestLinkCest extends \JTL\Onetimelink\AuthenticationCest
     {
         $I->wantTo('Create a Guest Link as user Tester with');
 
-        $I->sendPOST('/create/guest?amount=1', $this->getAuthParams());
+        $I->sendPOST('/create/guest', json_encode(array_merge(['amount' => 1], $this->getAuthParams())));
         $I->seeResponseCodeIs(201);
         $I->seeResponseIsJson();
 
@@ -59,11 +59,11 @@ class GuestLinkCest extends \JTL\Onetimelink\AuthenticationCest
         ]);
 
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST($this->formerCreatedLink, [
+        $I->sendPOST($this->formerCreatedLink, json_encode([
             'text' => $this->getTextContent(),
             'file0' => $this->resumableID,
             'amount' => 1,
-        ]);
+        ]));
 
         $I->seeResponseCodeIs(201);
         $I->seeResponseIsJson();

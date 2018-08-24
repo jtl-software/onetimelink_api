@@ -10,7 +10,7 @@ class OneTimeLinkCest extends \JTL\Onetimelink\AuthenticationCest
     {
         $I->wantTo('Create a One Time Link unauthenticated');
 
-        $I->sendPOST('/create', ['text' => $this->getTextContent()]);
+        $I->sendPOST('/create', json_encode(['text' => $this->getTextContent()]));
         $I->seeResponseCodeIs(403);
     }
 
@@ -37,11 +37,11 @@ class OneTimeLinkCest extends \JTL\Onetimelink\AuthenticationCest
 
         $I->amHttpAuthenticated('otl-tester@jtl-software.com', 'this-is-a-passw0rd');
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST('/create', [
+        $I->sendPOST('/create', json_encode([
             'text' => $this->getTextContent(),
             'file0' => $this->resumableID,
             'amount' => 1,
-        ]);
+        ]));
 
         $I->seeResponseCodeIs(201);
         $I->seeResponseIsJson();
