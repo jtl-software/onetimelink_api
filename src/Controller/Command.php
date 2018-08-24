@@ -171,6 +171,10 @@ class Command implements ControllerInterface
                     $tags = $guestLinkDAO->getTags();
                     $isProtected = $guestLinkDAO->isProtectedLink();
 
+                    if($guestLinkDAO->getDeleted() !== null) {
+                        throw new \InvalidArgumentException('Guestlink has already been used');
+                    }
+
                     $createLink = new CreateLink($this->storage, $user, $this->request, $this->factory, $tags, $isProtected);
                     $guestLink = new UpdateGuestLink($createLink, $this->storage, $hash, $this->factory);
                     return $guestLink->execute();

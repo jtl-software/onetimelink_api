@@ -83,7 +83,6 @@ class GuestLinkCest extends \JTL\Onetimelink\AuthenticationCest
         $I->assertCount(1, $data['links']);
         $I->assertTrue(isset($data['links'][0]['onetimelink']));
         $I->assertTrue(isset($data['links'][0]['hash']));
-        $I->assertTrue(isset($data['links'][0]['user']));
 
         $this->formerCreatedLink = $data['links'][0]['onetimelink'];
         $this->formerCreatedHash = $data['links'][0]['hash'];

@@ -118,7 +118,7 @@ class CreateLink implements CommandInterface
         }
 
         $attachmentCount = 0;
-        $allowedKeys = ['amount', 'text', 'protected'];
+        $allowedKeys = ['amount', 'text', 'protected', 'tags'];
 
         /** @var array $data */
         foreach ($data as $key => $value) {
@@ -131,7 +131,7 @@ class CreateLink implements CommandInterface
             throw new \RuntimeException('Too many attachments. You may only upload one attachment!');
         }
 
-        $tags = json_decode($this->request->readGet('tags'), true);
+        $tags = $data['tags'] ?? [];
 
         if (\count($tags) === 0) {
             $tags = $this->tags;
@@ -142,7 +142,7 @@ class CreateLink implements CommandInterface
 
         /** @var array $data */
         foreach ($data as $key => $value) {
-            if ($key === 'amount') {
+            if ($key === 'amount' || $key === 'tags') {
                 continue;
             }
 

@@ -229,9 +229,8 @@ class CreateLinkTest extends TestCase
             ->willReturn(['text' => 'I am a string']);
 
         $requestMock->expects($this->once())
-            ->method('readGet')
-            ->with('tags')
-            ->willReturn('[]');
+            ->method('readInputAsJson')
+            ->willReturn(['amount' => 1]);
 
         $user = User::createUserFromString('foo');
 

@@ -85,7 +85,6 @@ class OneTimeLink
         return [
             'onetimelink' => $this->createLinkUri(),
             'hash' => $this->hash,
-            'user' => (string)$this->getUser(),
         ];
     }
 }

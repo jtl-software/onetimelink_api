@@ -77,10 +77,16 @@ class CreateGuestLink implements CommandInterface
      */
     public function execute(): Response
     {
+        $data = $this->request->readInputAsJson();
+
+        if ($data === null) {
+            throw new \RuntimeException('Missing data');
+        }
+
         $links = [];
-        $tags = json_decode($this->request->readGet('tags'), true) ?? [];
-        $amount = $this->request->readGet('amount');
-        $isProtected = (bool)$this->request->readGet('protected');
+        $tags = $data['tags'] ?? [];
+        $amount = (int)$data['amount'];
+        $isProtected = $data['protected'] ?? false;
 
         $this->logger->info("create {$amount} GuestLink(s)", ["user" => (string)$this->user]);
         for($i = 0; $i < $amount; ++$i) {

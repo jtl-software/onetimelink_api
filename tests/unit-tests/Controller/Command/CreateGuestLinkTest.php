@@ -42,9 +42,9 @@ class CreateGuestLinkTest extends TestCase
 
         /** @var Request|\PHPUnit_Framework_MockObject_MockObject $requestMock */
         $requestMock = $this->createMock(Request::class);
-        $requestMock->expects($this->at(1))
-            ->method('readGet')
-            ->willReturn(1);
+        $requestMock->expects($this->at(0))
+            ->method('readInputAsJson')
+            ->willReturn(['amount' => 1]);
 
 
         /** @var ViewInterface|\PHPUnit_Framework_MockObject_MockObject $view */

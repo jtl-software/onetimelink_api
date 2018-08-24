@@ -75,13 +75,11 @@ class OneTimeLinkTest extends TestCase
     public function testCanCovertedToArray()
     {
         $userMock = $this->createMock(User::class);
-        $userMock->expects($this->once())->method('__toString')->willReturn('foo');
         $otl = new OneTimeLink("fooDerBAr", $userMock);
 
         $this->assertEquals([
             'onetimelink' => '/read/fooDerBAr',
             'hash' => 'fooDerBAr',
-            'user' => 'foo'
         ], $otl->toArray());
     }
 }

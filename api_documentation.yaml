@@ -1,0 +1,154 @@
+swagger: "2.0"
+info:
+  title: OneTimeLink API
+  version: '1'
+host: otl.api.jtl-software.com
+consumes: 
+  - application/json
+produces: 
+  - application/json
+paths:
+  '/create':
+      post:
+        summary: Creates a link
+        security: 
+          - BasicAuth: []
+        tags:
+        - Create
+        description: >-
+          This call creates one or more links with user provided input.
+          The body has to contain a JSON object with all the parameters needed to create a link.
+          "amount" defines how many links will be created. "tags" is an array of tags displayed internally.
+          "protected" defines if the user needs to be logged in to view the link. "text" is the text content
+          of the link. "file" is a reference to a previously uploaded file.
+          The response contains an array of links as JSON objects. The property "onetimelink"
+          contains the URL for the GET request to read the link.
+          The property "hash" contains the hash representing the link.
+        parameters:
+          - in: body
+            name: body
+            schema:
+              $ref: '#/definitions/CreateLink'
+            required: true
+        responses:
+          '201':
+            description: Link created successfully
+            schema:
+              $ref: '#/definitions/Links'
+  '/create/{hash}':
+      post:
+        summary: Creates a link from a guest link
+        security: 
+          - BasicAuth: []
+        tags:
+        - Create
+        description: >-
+          This call does the same as the /create call, except it will create a new link
+          from an already existing guest link.
+        parameters:
+          - in: body
+            name: body
+            schema:
+              $ref: '#/definitions/CreateLink'
+            required: true
+          - in: path
+            name: hash
+            type: string
+            required: true
+            description: Hash of guest link
+        responses:
+          '201':
+            description: Link created successfully
+            schema:
+              $ref: '#/definitions/Links'
+  '/create/guest':
+    post:
+      summary: Creates a guest link
+      security: 
+        - BasicAuth: []
+      tags:
+      - Create
+      description: >-
+        This call generates one or more guest links.
+        The body has to contain a JSON object with all the parameters needed to create a link.
+        "amount" defines how many links will be created. "tags" is an array of tags displayed internally.
+        "protected" defines if the user needs to be logged in to view the link. The response contains an
+        array of links as JSON objects. The property "onetimelink"
+        contains the URL for the POST request to create the link with data.
+        The property "hash" contains the hash representing the link. It can be
+        accessed like this https://otl.jtl-software.de/#/g[hash] . The property
+        "user" contains the user who created the link.
+      parameters:
+        - in: body
+          name: body
+          schema:
+            $ref: '#/definitions/CreateGuestLink'
+          required: true
+      responses:
+        '201':
+          description: Link created successfully
+          schema:
+            $ref: '#/definitions/Guestlinks'
+definitions:
+  CreateLink:
+    properties:
+      amount:
+        type: integer
+        example: 1
+      tags:
+        type: array
+        items:
+          type: string
+        example: ["Foo", "Bar"]
+      protected:
+        type: boolean
+        example: false
+      text:
+        type: string
+        example: Example text
+      file0:
+        type: string
+        example: Reference to file if uploaded. This can be omitted.
+  Links:
+    properties:
+      links:
+        type: array
+        items:
+          type: object
+          properties:
+            onetimelink:
+              type: string
+              example: /read/6517c11e128824c513391d2e
+            hash:
+              type: string
+              example: 6517c11e128824c513391d2e
+  Guestlinks:
+    properties:
+      links:
+        type: array
+        items:
+          type: object
+          properties:
+            onetimelink:
+              type: string
+              example: /create/6517c11e128824c513391d2e
+            hash:
+              type: string
+              example: 6517c11e128824c513391d2e
+  CreateGuestLink:
+    properties:
+      amount:
+        type: integer
+        example: 1
+      tags:
+        type: array
+        items:
+          type: string
+        example: ["Foo", "Bar"]
+      protected:
+        type: boolean
+        example: false
+securityDefinitions:
+  BasicAuth:
+    type: basic
+            
