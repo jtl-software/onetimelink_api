@@ -37,6 +37,7 @@ class RegistrationCest
     }
 
     /**
+     * @depends tryRegistration
      * @param ApiTester $I
      */
     public function tryActivate(ApiTester $I)
@@ -46,6 +47,7 @@ class RegistrationCest
     }
 
     /**
+     * @depends tryActivate
      * @param ApiTester $I
      */
     public function tryLogin(ApiTester $I)
