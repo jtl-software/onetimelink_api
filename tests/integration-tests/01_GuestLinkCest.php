@@ -23,6 +23,10 @@ class GuestLinkCest extends \JTL\Onetimelink\AuthenticationCest
     {
         $I->wantTo('Create a Guest Link as user Tester with');
 
+        $I->amHttpAuthenticated('otl-tester@jtl-software.com', 'this-is-a-passw0rd');
+        $I->sendPOST('/login');
+        $I->seeResponseCodeIs(200);
+
         $I->sendPOST('/create/guest', json_encode(array_merge(['amount' => 1], $this->getAuthParams())));
         $I->seeResponseCodeIs(201);
         $I->seeResponseIsJson();
@@ -44,6 +48,10 @@ class GuestLinkCest extends \JTL\Onetimelink\AuthenticationCest
     {
         $I->wantTo('Create a One Time Link as Guest Link Response');
         $this->resumableID = uniqid('1024-codeceptionjpg', true);
+
+        $I->amHttpAuthenticated('otl-tester@jtl-software.com', 'this-is-a-passw0rd');
+        $I->sendPOST('/login');
+        $I->seeResponseCodeIs(200);
 
         $I->sendPOST('/prepare_create?' . http_build_query($this->getAuthParams()), [
             'resumableChunkNumber' => 1,

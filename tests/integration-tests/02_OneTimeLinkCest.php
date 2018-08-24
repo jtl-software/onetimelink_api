@@ -22,6 +22,10 @@ class OneTimeLinkCest extends \JTL\Onetimelink\AuthenticationCest
         $I->wantTo('Create a One Time Link as user Tester');
         $this->resumableID = uniqid('2048-codeceptionjpg', true);
 
+        $I->amHttpAuthenticated('otl-tester@jtl-software.com', 'this-is-a-passw0rd');
+        $I->sendPOST('/login');
+        $I->seeResponseCodeIs(200);
+
         $I->sendPOST('/prepare_create?' . http_build_query($this->getAuthParams()), [
             'resumableChunkNumber' => 1,
             'resumableChunkSize' => 4096,
