@@ -57,7 +57,6 @@ return [
         if(!empty($tags)){
             $subjectExt = '['.implode('][', $tags).'] ';
         }
-        $subjectExt = mb_convert_encoding($subjectExt, 'Windows-1252', 'auto');
 
         return new HTMLMessage(
             $user->getEmail(),
