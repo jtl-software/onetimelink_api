@@ -184,6 +184,6 @@ return [
     'user-activation-secret' => '##secret##',
 
     'use_download_server' => true,
-    'download_server_ip' => 'http://172.17.0.1:3141/',
+    'download_server_ip' => 'http://127.0.0.1:3141/',
 
 ];

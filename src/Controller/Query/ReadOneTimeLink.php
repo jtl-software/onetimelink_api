@@ -140,12 +140,19 @@ class ReadOneTimeLink extends AbstractObservable implements QueryInterface
         }
 
         $owner = null;
+        $downloadAttachment = [
+            'hash' => null,
+            'name' => null,
+        ];
 
         /** @var OODBBean $attachment */
         foreach ($attachments as $attachment) {
             if ($attachment->name === '-#-TEXTINPUT-#-') {
                 continue;
             }
+
+            $downloadAttachment['hash'] = $attachment->hash;
+            $downloadAttachment['name'] = $attachment->name;
 
             $payload = $this->storage->readAttachment($attachment->hash);
             $fileName = $this->factory->getConfig()->getTempDir() . '/';
@@ -182,8 +189,8 @@ class ReadOneTimeLink extends AbstractObservable implements QueryInterface
             if ($fileName !== null && file_exists($fileName)) {
                 $payload = [
                     'linkHash' => $this->hash,
-                    'attachmentHash' => $attachment->hash,
-                    'attachmentName' => $attachmentName,
+                    'attachmentHash' => $downloadAttachment['hash'],
+                    'attachmentName' => $downloadAttachment['name'],
                     'auth' => $deleteAuth
                 ];
                 $payload = base64_encode(json_encode($payload));
