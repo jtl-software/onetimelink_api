@@ -34,6 +34,9 @@ class AttachmentDAO
     /** @var bool */
     private $isMerged;
 
+    /** @var integer */
+    private $size;
+
     public function __construct(
         $email,
         $created,
@@ -41,7 +44,8 @@ class AttachmentDAO
         $fileType,
         $fileName,
         $hash,
-        $isMerged
+        $isMerged,
+        $size = 0
     )
     {
         $this->userEmail = $email;
@@ -51,6 +55,7 @@ class AttachmentDAO
         $this->fileName = $fileName;
         $this->hash = $hash;
         $this->isMerged = $isMerged;
+        $this->size = $size;
     }
 
     public function save(): bool
@@ -68,6 +73,7 @@ class AttachmentDAO
         $attachment->name = $this->getFileName();
         $attachment->hash = $this->getHash();
         $attachment->isMerged = $this->isMerged();
+        $attachment->size = $this->getSize();
 
         return R::store($attachment) !== false;
     }
@@ -95,7 +101,8 @@ class AttachmentDAO
                 $attachment->filetype,
                 $attachment->name,
                 $attachment->hash,
-                (bool)$attachment->isMerged
+                (bool)$attachment->isMerged,
+                $attachment->size
             );
         }
 
@@ -214,6 +221,17 @@ class AttachmentDAO
         $this->isMerged = $isMerged;
     }
 
+    public function getSize(){
+        return $this->size;
+    }
+
+    /**
+     * @param int $size
+     */
+    public function setSize(int $size){
+        $this->size = $size;
+    }
+
     /**
      * @return array
      */
@@ -227,6 +245,7 @@ class AttachmentDAO
             'name' => $this->getFileName(),
             'hash' => $this->getHash(),
             'merged' => $this->isMerged(),
+            'size' => $this->getSize(),
         ];
     }
 

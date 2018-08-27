@@ -64,6 +64,7 @@ class DatabaseStorage
         $attachment = AttachmentDAO::getAttachmentFromHash($hash);
         if ($attachment !== null) {
             $attachment->setIsMerged(true);
+            $attachment->setSize(filesize($this->getDataFileLocation($hash)));
             return $attachment->save() !== false;
         }
 
@@ -126,7 +127,6 @@ class DatabaseStorage
         bool $isProtectedLink = false): bool
     {
         $attachmentBeans = [];
-
         /** @var AttachmentDAO $attachment */
         foreach ($attachments as $attachment) {
             $attachmentBeans[] = R::findOne(
@@ -201,6 +201,10 @@ class DatabaseStorage
         return new Payload('', MetaData::createFromExistingMetaData($attachment->toArray()));
     }
 
+    public function deleteAttachment(string $hash){
+        unlink($this->getAttachmentLocation($hash));
+    }
+
     /**
      * @param string $hash
      * @return string
@@ -269,7 +273,7 @@ class DatabaseStorage
      */
     private function getDirectory(string $hash): string
     {
-        $directory = (string)$this->directory . substr($hash, 0, 2);
+        $directory = (string)$this->directory . substr($hash, 0, 10);
         if (!is_dir($directory)) {
             if (!mkdir($directory) && !is_dir($directory)) {
                 throw new \RuntimeException(sprintf('Directory "%s" was not created', $directory));

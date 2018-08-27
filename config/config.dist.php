@@ -33,7 +33,7 @@ return [
     ###################################################################
     # Notification Settings
 
-    # Email address used in from when sending notification mails
+    # Email Adress used in from when sending notification mails
     'from' => 'otl-do-not-reply@jtl-software.com',
 
     'notifier' => function (string $mailFrom): NotifierInterface {
@@ -140,12 +140,30 @@ return [
     # Path for File Storage
     'storage-directory' => __DIR__ . '/../../data',
 
+    # Path for File Storage
+    'user-storage-directory' =>  __DIR__ . '/../../user',
+
     # Storage Engine
     'storage' => function (string $directory): DatabaseStorage {
         return new DatabaseStorage(new LocationDirectory($directory));
     },
 
     # END: Storage Settings
+    ###################################################################
+
+    ###################################################################
+    # Upload Settings
+
+    # Chunk size in MB. Should match settings in UI
+    'chunk-size' => 15,
+
+    # Max file size in MB
+    'max-file-size' => 102400,
+
+    # Default quota for users in MB
+    'default-quota' => 512000,
+
+    # END: Upload Settings
     ###################################################################
 
     ###################################################################
@@ -180,8 +198,8 @@ return [
 
     'allow-user-with-mail' => '/.*@(jtl-software|example)\.com$/',
 
+    'root_dir' => __DIR__ . '/../',
     'tmp_dir' => '/application/data',
-    'user-activation-secret' => '##secret##',
 
 
 ];

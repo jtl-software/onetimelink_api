@@ -96,7 +96,6 @@ class CreateGuestLink implements CommandInterface
                 $links[] = [
                     'onetimelink' => "/create/$hash",
                     'hash' => $hash,
-                    'user' => (string)$this->user,
                 ];
 
                 $this->userMetaStorage->appendLink($hash);

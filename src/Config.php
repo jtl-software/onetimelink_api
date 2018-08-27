@@ -140,6 +140,36 @@ class Config
     }
 
     /**
+     * @return LocationDirectory
+     */
+    public function getUserStoragePath(): LocationDirectory
+    {
+        $path = $this->config['user-storage-directory'];
+        return new LocationDirectory($path);
+    }
+
+    /**
+     * @return int
+     */
+    public function getChunkSize() : int {
+        return $this->config['chunk-size'] * 1024 * 1024;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxFileSize() : int{
+        return $this->config['max-file-size'] * 1024 * 1024;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDefaultUserQuota() : int {
+        return $this->config['default-quota'] * 1024 * 1024;
+    }
+
+    /**
      * @return UserList
      */
     public function createUserList(): UserList
@@ -258,6 +288,14 @@ class Config
         return $this->config['allow-user-with-mail'];
     }
 
+    /**
+     * @return string
+     */
+    public function getRootDir(): string
+    {
+        return $this->config['root_dir'];
+    }
+
     public function getTempDir(): string
     {
         return $this->config['tmp_dir'];
@@ -296,10 +334,5 @@ class Config
     public function getLogFormat()
     {
         return $this->config['log-format'];
-    }
-
-    public function getUserActivationSecret(): string
-    {
-        return $this->config['user-activation-secret'];
     }
 }

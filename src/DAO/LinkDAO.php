@@ -122,7 +122,7 @@ class LinkDAO
                 $link->user,
                 $link->hash,
                 $link->isGuestLink,
-                array_values(array_filter(explode(',', $link->tags), '\strlen')),
+                $link->tags,
                 $link->created,
                 $link->sharedAttachmentList,
                 $link->deleted,

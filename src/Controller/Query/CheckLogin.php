@@ -30,7 +30,7 @@ class CheckLogin implements QueryInterface
     /**
      * @var \JTL\Onetimelink\Storage\UserMetaStorage
      */
-    private $userMetaStorage;
+    private $userMataStorage;
 
     /**
      * @var Logger
@@ -47,7 +47,7 @@ class CheckLogin implements QueryInterface
     {
         $this->user = $user;
         $this->view = $factory->createJsonView();
-        $this->userMetaStorage = $factory->createUserMetaStorage($this->user);
+        $this->userMataStorage = $factory->createUserMetaStorage($this->user);
         $this->logger = $factory->createLogger();
     }
 
@@ -55,7 +55,7 @@ class CheckLogin implements QueryInterface
     {
         if ($this->user->isAuthenticated()) {
             $this->view->set('session', 'active');
-            $this->view->set('links', $this->userMetaStorage->getLinks());
+            $this->view->set('links', $this->userMataStorage->getLinks());
             $this->logger->debug('Session activated for user ' . $this->user->getEmail());
         } else {
             $this->view->set('session', 'inactive');

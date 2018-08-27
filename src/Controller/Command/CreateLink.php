@@ -142,7 +142,7 @@ class CreateLink implements CommandInterface
 
         /** @var array $data */
         foreach ($data as $key => $value) {
-            if ($key === 'amount' || $key === 'tags') {
+            if ($key === 'amount' || $key == 'tags') {
                 continue;
             }
 
@@ -179,7 +179,6 @@ class CreateLink implements CommandInterface
         $this->logger->info("create {$data['amount']} OTL(s)", ["user" => (string)$this->user]);
         for ($i = 0; $i < $data['amount']; ++$i) {
             $linkHash = LinkHash::createUnique();
-
             if ($this->storage->writeLink($linkHash, $attachments, $this->user, $tags, $this->isProtected)) {
                 $this->link = new OneTimeLink($linkHash, $this->user);
                 $links[] = $this->link->toArray();

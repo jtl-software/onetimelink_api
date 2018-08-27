@@ -1,0 +1,162 @@
+<?php
+/**
+ * This File is part of JTL-Software
+ *
+ * User: pkanngiesser
+ * Date: 24.08.18
+ */
+
+namespace JTL\Onetimelink\Controller\Command;
+
+
+use JTL\Onetimelink\Config;
+use JTL\Onetimelink\Controller\CommandInterface;
+use JTL\Onetimelink\DAO\UploadDAO;
+use JTL\Onetimelink\Exception\MissingParameterException;
+use JTL\Onetimelink\Factory;
+use JTL\Onetimelink\LinkHash;
+use JTL\Onetimelink\Payload;
+use JTL\Onetimelink\Request;
+use JTL\Onetimelink\Response;
+use JTL\Onetimelink\Storage\DatabaseStorage;
+use JTL\Onetimelink\Storage\MetaData;
+use JTL\Onetimelink\User;
+use JTL\Onetimelink\View\ViewInterface;
+
+class UploadFile implements CommandInterface
+{
+    const PLAIN_DATA_FIELD = 'data';
+
+    /**
+     * @var DatabaseStorage
+     */
+    private $storage;
+
+    /**
+     * @var Request
+     */
+    private $request;
+
+    /**
+     * @var ViewInterface
+     */
+    private $view;
+
+    /**
+     * @var User
+     */
+    private $user;
+
+    /**
+     * @var \Monolog\Logger
+     */
+    private $logger;
+
+    /**
+     * @var Config
+     */
+    private $config;
+
+    public function __construct(DatabaseStorage $storage, User $user, Request $request, Factory $factory)
+    {
+        $this->storage = $storage;
+        $this->request = $request;
+        $this->view = $factory->createJsonView();
+        $this->logger = $factory->createLogger();
+        $this->user = $user;
+        $this->config = $factory->getConfig();
+    }
+
+    public function execute(): Response
+    {
+        $chunkSize = $this->config->getChunkSize();
+        $maxFileSize = $this->config->getMaxFileSize();
+
+        $payload = $this->createPayload();
+
+        $chunkNumber = $this->request->readPost('resumableChunkNumber');
+        $totalChunks = $this->request->readPost('resumableTotalChunks');
+
+        $uploadToken = $this->request->readPost('uploadToken');
+
+        $uploadDAO = UploadDAO::getUploadFromToken($uploadToken);
+
+        if($uploadDAO === null){
+            throw new \RuntimeException('Invalid upload token');
+        }
+
+        if($uploadDAO->isDone()){
+            throw new \RuntimeException('Token already expired');
+        }
+
+        $hash = LinkHash::create($uploadToken);
+
+        if($payload->getMetaData()->getSize() > $chunkSize){
+            throw new \RuntimeException('Failed to store Data. Chunk too big');
+        }
+
+        if ($this->storage->isMergeDone($hash)) {
+            $this->logger->debug("{$hash} is already merged");
+            return Response::createSuccessfulCreated($this->view);
+        }
+
+        $receivedBytes = $uploadDAO->getReceivedBytes();
+        $maxUploadSize = $uploadDAO->getMaxUploadSize();
+        $receivedBytes = $receivedBytes + $payload->getMetaData()->getSize();
+        if($receivedBytes > $maxFileSize + 1024){
+            throw new \RuntimeException('Received too much chunks. File size limit hit');
+        }
+
+        if($maxUploadSize !== 0 && $receivedBytes > $maxUploadSize + 1024)
+        {
+            throw new \RuntimeException('maxUploadSize reached');
+        }
+
+        if ($chunkNumber <= $totalChunks && $this->storage->writeChunk($hash, $chunkNumber, $payload)) {
+            $uploadDAO->setReceivedBytes($receivedBytes);
+            $uploadDAO->save();
+            $this->logger->debug("Process upload chunk {$chunkNumber}/{$totalChunks}", ['user' => (string)$this->user]);
+            if ($chunkNumber === $totalChunks) {
+                $this->logger->info("File upload is done - {$totalChunks} chunks uploaded - Hash {$hash}", ['user' => (string)$this->user]);
+                $this->storage->mergeChunks($hash);
+                $this->logger->info("File upload is done - {$totalChunks} chunks uploaded - Hash {$hash}", ['user' => (string)$this->user]);
+                $uploadDAO->setDone(true);
+                $uploadDAO->save();
+            }
+            return Response::createSuccessful($this->view);
+        }
+
+        throw new \RuntimeException('Failed to store Data');
+    }
+
+    /**
+     * @return Payload
+     *
+     * @throws MissingParameterException
+     * @throws \Exception
+     */
+    private function createPayload(): Payload
+    {
+        $contentType = $this->request->readGet('type');
+        $filename = $this->request->readPost('resumableFilename');
+        $data = $this->request->readPost(self::PLAIN_DATA_FIELD);
+        if ($data === null && isset($_FILES['file']['tmp_name'], $_FILES['file']['type'])) {
+            $data = file_get_contents($_FILES['file']['tmp_name']);
+            $contentType = $_FILES['file']['type'];
+            $size = $_FILES['file']['size'];
+        }
+
+        if (empty($data)) {
+            throw new MissingParameterException('Missing Data');
+        }
+
+        $metaData = new MetaData(
+            $contentType ?? 'text/plain',
+            $this->user,
+            $filename,
+            $size
+        );
+
+        return new Payload($data, $metaData);
+    }
+}

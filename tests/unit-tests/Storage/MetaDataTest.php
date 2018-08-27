@@ -116,6 +116,7 @@ class MetaDataTest extends TestCase
             'dingens',
             User::createAnonymousUser(),
             'filename',
+            0,
             $date
         );
 

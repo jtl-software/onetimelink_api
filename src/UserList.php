@@ -50,8 +50,9 @@ class UserList
                 $email,
                 PasswordHash::createFromHash($this->userList[$email]['password'])
             );
-
             $user->setIsActive($this->userList[$email]['active'] ?? true);
+            $user->setMaxUploadSize($this->userList[$email]['maxUploadSize'] ?? 0);
+            $user->setQuota($this->userList[$email]['quota'] ?? 0);
 
             if (\in_array($email, $this->adminUser, true)) {
                 $user->setIsAdmin();
@@ -69,6 +70,8 @@ class UserList
                 'email' => $email,
                 'isAdmin' => \in_array($email, $this->adminUser, true),
                 'active' => $user['active'] ?? true,
+                'maxUploadSize' => $user['maxUploadSize'] ?? 0,
+                'quota' => $user['quota'] ?? 0,
                 'created_at' => $user['created_at'] ?? null
             ];
         }

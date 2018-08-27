@@ -91,7 +91,7 @@ class DatabaseStorageTest extends TestCase
     {
         $hash = uniqid('hash', true);
 
-        $chunkDir = $this->directory . substr($hash, 0, 2) . '/';
+        $chunkDir = $this->directory . substr($hash, 0, 10) . '/';
         if (!is_dir($chunkDir)) {
             mkdir($chunkDir);
         }
@@ -128,7 +128,7 @@ class DatabaseStorageTest extends TestCase
 
         $metaData = new MetaData('text/plain', $testUser, 'testFile.txt');
         $payload = new Payload($randomData, $metaData);
-        $assumedFileName = $this->directory . substr($hash, 0, 2) . '/' . $hash;
+        $assumedFileName = $this->directory . substr($hash, 0, 10) . '/' . $hash;
 
         $this->assertTrue($this->storage->write($hash, $payload));
         $this->assertFileExists($assumedFileName);
@@ -148,7 +148,7 @@ class DatabaseStorageTest extends TestCase
 
         $metaData = new MetaData('text/plain', $testUser, 'testFile.txt');
         $payload = new Payload($randomData, $metaData);
-        $assumedFileName = $this->directory . substr($attachmentHash, 0, 2) . '/' . $attachmentHash;
+        $assumedFileName = $this->directory . substr($attachmentHash, 0, 10) . '/' . $attachmentHash;
 
         $this->assertTrue($this->storage->write($attachmentHash, $payload));
         $this->assertFileExists($assumedFileName);
@@ -192,7 +192,7 @@ class DatabaseStorageTest extends TestCase
 
         $metaData = new MetaData('text/plain', $testUser, 'testFile.txt');
         $payload = new Payload($randomData, $metaData);
-        $assumedFileName = $this->directory . substr($attachmentHash, 0, 2) . '/' . $attachmentHash;
+        $assumedFileName = $this->directory . substr($attachmentHash, 0, 10) . '/' . $attachmentHash;
 
         $this->assertTrue($this->storage->write($attachmentHash, $payload));
         $this->assertFileExists($assumedFileName);
@@ -231,7 +231,7 @@ class DatabaseStorageTest extends TestCase
 
         $metaData = new MetaData('text/plain', $testUser, 'testFile.txt');
         $payload = new Payload($randomData, $metaData);
-        $assumedFileName = $this->directory . substr($attachmentHash, 0, 2) . '/' . $attachmentHash;
+        $assumedFileName = $this->directory . substr($attachmentHash, 0, 10) . '/' . $attachmentHash;
 
         $this->assertTrue($this->storage->write($attachmentHash, $payload));
         $this->assertFileExists($assumedFileName);
@@ -270,7 +270,7 @@ class DatabaseStorageTest extends TestCase
 
         $metaData = new MetaData('text/plain', $testUser, 'testFile.txt');
         $payload = new Payload($randomData, $metaData);
-        $assumedFileName = $this->directory . substr($attachmentHash, 0, 2) . '/' . $attachmentHash;
+        $assumedFileName = $this->directory . substr($attachmentHash, 0, 10) . '/' . $attachmentHash;
 
         $this->assertTrue($this->storage->write($attachmentHash, $payload));
         $this->assertFileExists($assumedFileName);
@@ -305,7 +305,7 @@ class DatabaseStorageTest extends TestCase
 
         $metaData = new MetaData('text/plain', $testUser, 'testFile.txt');
         $payload = new Payload($randomData, $metaData);
-        $assumedFileName = $this->directory . substr($hash, 0, 2) . '/' . $hash;
+        $assumedFileName = $this->directory . substr($hash, 0, 10) . '/' . $hash;
 
         $this->assertTrue($this->storage->write($hash, $payload));
         $this->assertFileExists($assumedFileName);

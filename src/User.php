@@ -44,6 +44,16 @@ class User
     private $isActive = true;
 
     /**
+     * @var int
+     */
+    private $maxUploadSize;
+
+    /**
+     * @var int
+     */
+    private $quota;
+
+    /**
      * @param string $email
      * @return User
      */
@@ -141,6 +151,13 @@ class User
     }
 
     /**
+     * @param int $maxUploadSize
+     */
+    public function setMaxUploadSize(int $maxUploadSize){
+        $this->maxUploadSize = $maxUploadSize;
+    }
+
+    /**
      * @return bool
      */
     public function isAdmin(): bool
@@ -154,6 +171,24 @@ class User
     public function setIsAdmin(bool $isAdmin = true)
     {
         $this->isAdmin = $isAdmin;
+    }
+
+    /**
+     * @param int $quota
+     */
+    public function setQuota(int $quota){
+        $this->quota = $quota;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxUploadSize(){
+        return $this->maxUploadSize;
+    }
+
+    public function getQuota(){
+        return $this->quota;
     }
 
     /**
@@ -174,12 +209,13 @@ class User
 
     /**
      * User constructor.
-     *
      * @param string $email
      * @param PasswordHash|null $passwordHash
      * @param bool $isAnonymous
+     * @param int $maxUploadSize
+     * @param int $quota
      */
-    private function __construct(string $email, PasswordHash $passwordHash = null, $isAnonymous = false)
+    private function __construct(string $email, PasswordHash $passwordHash = null, $isAnonymous = false, int $maxUploadSize = 0, int $quota = 0)
     {
         $this->email = $email;
         $this->isAnonymous = $isAnonymous;
@@ -187,5 +223,7 @@ class User
         if ($this->passwordHash === null) {
             $this->passwordHash = PasswordHash::createFromHash('');
         }
+        $this->maxUploadSize = $maxUploadSize;
+        $this->quota = $quota;
     }
 }

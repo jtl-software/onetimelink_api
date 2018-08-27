@@ -18,6 +18,7 @@ class MetaData
     const IDX_CREATED_BY_MAIL = 'user_email';
     const IDX_CREATED = 'created';
     const IDX_ORIGINAL_FILE_NAME = 'name';
+    const IDX_FILE_SIZE = 'chunk_size';
 
     /**
      * @var string
@@ -38,6 +39,11 @@ class MetaData
      * @var string
      */
     private $filename;
+
+    /**
+     * @var int
+     */
+    private $size;
 
     /**
      * @param array $metaData
@@ -64,32 +70,36 @@ class MetaData
 
         $filename = $metaData[self::IDX_ORIGINAL_FILE_NAME] ?? null;
 
+        $fileSize = $metaData[self::IDX_FILE_SIZE] ?? null;
+
         return new MetaData(
             $metaData[self::IDX_FILE_TYPE],
             $user,
             $filename,
+            $fileSize,
             new \DateTimeImmutable($metaData[self::IDX_CREATED])
         );
     }
 
     /**
      * MetaData constructor.
-     *
      * @param string $fileType
      * @param User $user
-     * @param string $filename
-     * @param \DateTimeImmutable $created
+     * @param string|null $filename
+     * @param \DateTimeImmutable|null $created
+     * @param int|null $size
      * @throws \Exception
      */
     public function __construct(
         string $fileType,
         User $user,
         string $filename = null,
+        int $size = null,
         \DateTimeImmutable $created = null
     ) {
         $this->fileType = $fileType;
         $this->user = $user;
-
+        $this->size = $size;
         $this->filename = $filename;
         if ($this->filename === null) {
             $this->filename = uniqid('file') . '.txt';
@@ -134,6 +144,13 @@ class MetaData
     }
 
     /**
+     * @return int
+     */
+    public function getSize(): int {
+        return $this->size;
+    }
+
+    /**
      * @return string
      */
     public function toJson(): string
@@ -150,7 +167,7 @@ class MetaData
             self::IDX_FILE_TYPE => $this->getFileType(),
             self::IDX_CREATED_BY_MAIL => (string)$this->getUser(),
             self::IDX_ORIGINAL_FILE_NAME => $this->getFilename(),
-            self::IDX_CREATED => $this->created->format('c'),
+            self::IDX_CREATED => $this->created->format('c')
         ];
         return $_;
     }

@@ -121,7 +121,7 @@ class CreateUser extends AbstractObservable implements CommandInterface
             }
         }
 
-        $activationHash =  sha1($this->config->getUserActivationSecret() . $this->email);
+        $activationHash =  time() . sha1(time() . $this->email);
         $userList['user'][$this->email] = [
             'password' => PasswordHash::createHash($this->email, $this->password),
             'active' => false,

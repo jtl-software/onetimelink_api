@@ -12,13 +12,19 @@ use JTL\Onetimelink\Authentication\AuthenticationInterface;
 use JTL\Onetimelink\Controller\Query\CheckLogin;
 use JTL\Onetimelink\Controller\Query\CheckOneTimeLink;
 use JTL\Onetimelink\Controller\Query\CheckPasswordResetHash;
+use JTL\Onetimelink\Controller\Query\GetUploadLimits;
 use JTL\Onetimelink\Controller\Query\ReadOneTimeLink;
+use JTL\Onetimelink\Controller\Query\GenerateUploadToken;
+use JTL\Onetimelink\DAO\LinkDAO;
+use JTL\Onetimelink\Exception\AuthenticationException;
 use JTL\Onetimelink\Exception\InvalidRouteException;
 use JTL\Onetimelink\Factory;
 use JTL\Onetimelink\Request;
 use JTL\Onetimelink\Response;
 use JTL\Onetimelink\Storage\DatabaseStorage;
+use JTL\Onetimelink\User;
 use JTL\Onetimelink\View\JsonView;
+use Monolog\Logger;
 
 class Query implements ControllerInterface
 {
@@ -41,6 +47,11 @@ class Query implements ControllerInterface
     private $storage;
 
     /**
+     * @var Logger
+     */
+    private $logger;
+
+    /**
      * Controller constructor.
      *
      * @param Request $request
@@ -59,11 +70,12 @@ class Query implements ControllerInterface
         $this->authentication = $authentication;
         $this->storage = $storage;
         $this->factory = $factory;
+        $this->logger = $this->factory->createLogger();
     }
 
     /**
      * @return Response
-     *
+     * @throws AuthenticationException
      * @throws InvalidRouteException
      */
     public function run(): Response
@@ -94,11 +106,43 @@ class Query implements ControllerInterface
                 $hash = $matches[1] ?? null;
                 $query = new CheckPasswordResetHash($this->factory, $hash, new JsonView());
                 return $query->run();
+            case preg_match('/^\/upload-limits\/(\w{9,}).*$/', $uri, $matches) === 1:
+                $hash = $matches[1] ?? null;
+                $guestLinkDAO = LinkDAO::getLinkFromHash($hash);
+                if($guestLinkDAO === null){
+                    throw new \InvalidArgumentException('Guestlink does not exist');
+                }
+                return (new GetUploadLimits($this->factory,$this->factory->getConfig()->getMaxFileSize()))->run();
+            case preg_match('/^\/upload-limits.*$/', $uri) === 1:
+                $this->failWhenNotAuthenticated($user, $uri);
+                $quota = $user->getQuota();
+                if($quota === 0){
+                    $quota = $this->factory->getConfig()->getDefaultUserQuota();
+                }
+                return (new GetUploadLimits($this->factory, $user->getMaxUploadSize(), false, $quota, $user->getEmail()))->run();
 
             case preg_match('/^\/_.*$/', $uri) === 1:
                 return (new CheckLogin($user, $this->factory))->run();
         }
 
         throw new InvalidRouteException();
+    }
+
+    /**
+     * @param User $user
+     * @param $path
+     * @throws AuthenticationException
+     */
+    private function failWhenNotAuthenticated(User $user, $path)
+    {
+        if (!$user->isAuthenticated()) {
+            $this->logger->info("{$user->obfuscatedUsername()} is not allowed to perform operation (POST: {$path}) - authenticated: false");
+            throw new AuthenticationException("{$user} is not allowed to perform operation (POST: {$path})");
+        }
+
+        if(false === $user->isActive()){
+            $this->logger->info("{$user->obfuscatedUsername()} is inactive and not allowed to perform operation (POST: {$path}) - active: false");
+            throw new AuthenticationException("{$user} is inactive");
+        }
     }
 }
