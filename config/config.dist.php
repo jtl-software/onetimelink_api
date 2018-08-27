@@ -48,6 +48,8 @@ return [
     'message-guest-link-response' => function (User $user, $oneTimeLink, array $tags): AbstractMessage {
         $directory = new LocationDirectory(__DIR__ . '/../Resources/EmailTemplate/');
 
+        $tags = array_map(function ($tag) {return mb_convert_encoding($tag, 'UTF-8', 'auto');}, $tags);
+
         $data = new \stdClass();
         $data->user = (string)$user;
         $data->yourLink = $oneTimeLink;
@@ -57,7 +59,7 @@ return [
         if(!empty($tags)){
             $subjectExt = '['.implode('][', $tags).'] ';
         }
-        $subjectExt = mb_convert_encoding($subjectExt, 'Windows-1252', 'auto');
+        $subjectExt = mb_convert_encoding($subjectExt, 'UTF-8', 'auto');
 
         return new HTMLMessage(
             $user->getEmail(),
@@ -69,6 +71,8 @@ return [
 
     'message-link-deleted' => function (User $user, array $tags, string $ip, string $useragent): AbstractMessage {
         $directory = new LocationDirectory(__DIR__ . '/../Resources/EmailTemplate/');
+
+        $tags = array_map(function ($tag) {return mb_convert_encoding($tag, 'UTF-8', 'auto');}, $tags);
 
         $data = new \stdClass();
         $data->user = (string)$user;
