@@ -33,7 +33,7 @@ return [
     ###################################################################
     # Notification Settings
 
-    # Email Adress used in from when sending notification mails
+    # Email address used in from when sending notification mails
     'from' => 'otl-do-not-reply@jtl-software.com',
 
     'notifier' => function (string $mailFrom): NotifierInterface {
