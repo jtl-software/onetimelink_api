@@ -183,5 +183,7 @@ return [
     'tmp_dir' => '/application/data',
     'user-activation-secret' => '##secret##',
 
+    'use_download_server' => true,
+    'download_server_ip' => 'http://172.17.0.1:3141/',
 
 ];

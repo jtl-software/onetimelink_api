@@ -27,6 +27,12 @@ return [
     # Secret key used for creating user activation hashes
     # 'user-activation-secret' => '',
 
+    # Whether or not to use a special download server. Useful if large downloads are often aborted due to network errors.
+    # 'use_download_server' => true,
+
+    # IP of the download server
+    # 'download_server_ip' => '',
+
     ###################################################################
     # Notification Settings
     ###################################################################
@@ -85,7 +91,7 @@ return [
 
     # Attachment storage location (relative to the scripts/Console.php script)
     # 'console-storage-directory' => '/',
-    
+
     # Directory where downloads are stored (relative to the scripts/Console.php script)
     # 'console-tmp-dir' => '',
 
