@@ -89,6 +89,7 @@ class CheckOneTimeLink implements QueryInterface
                         'contentType' => $attachment->filetype,
                         'user' => $attachment->user,
                         'name' => $attachment->name,
+                        'size' => filesize($this->storage->getAttachmentLocation($attachment->hash)),
                     ];
 
                     if ($attachment->filetype === 'text/plain'
