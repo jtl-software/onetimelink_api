@@ -179,6 +179,7 @@ class ReadOneTimeLink extends AbstractObservable implements QueryInterface
 
         if ($fileName !== null && file_exists($fileName)) {
             $header->set('Content-Disposition', "attachment; filename=\"{$attachmentName}\"");
+            $header->set('Content-Length', filesize($fileName));
             $header->set('X-Accel-Redirect', $fileName);
             $header->set('X-Sendfile', $fileName);
         } else {
