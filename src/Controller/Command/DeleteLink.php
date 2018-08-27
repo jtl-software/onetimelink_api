@@ -54,12 +54,13 @@ class DeleteLink
         $this->logger->info('Requested delete link auth for link hash ' . $this->linkHash . ' with auth '
                             . $this->auth);
         $ownerEmail = $this->storage->getDeleteAuthOwnerEmail($this->linkHash, $this->auth);
+        $errorMessage = 'Could not delete link with link hash ' . $this->linkHash . ' and auth '
+                        . $this->auth . ' from database.';
 
         if ($ownerEmail !== '') {
             $owner = User::createUserFromString($ownerEmail);
         } else {
-            $this->logger->error('Could not delete link with link hash ' . $this->linkHash . ' and auth '
-                                 . $this->auth . ' from database. No owner email exists');
+            $this->logger->error("{$errorMessage} No owner email exists");
             return Response::createNotFound();
         }
 
@@ -69,13 +70,11 @@ class DeleteLink
                 $this->storage->deleteLink($this->linkHash);
                 $userMetaStorage->setToDeleted($this->linkHash);
             } catch (\Exception $e) {
-                $this->logger->error('Could not delete link with link hash ' . $this->linkHash . ' and auth '
-                                     . $this->auth . ' from database. Error message: ' . $e->getMessage());
+                $this->logger->error("{$errorMessage} Error message: {$e->getMessage()}");
                 return Response::createNotFound();
             }
         } else {
-            $this->logger->error('Could not delete link with link hash ' . $this->linkHash . ' and auth '
-                                 . $this->auth . ' from database. No such entry exists in the database');
+            $this->logger->error("{$errorMessage} No such entry exists in the database");
             return Response::createNotFound();
         }
 

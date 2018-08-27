@@ -202,7 +202,7 @@ class ReadOneTimeLink extends AbstractObservable implements QueryInterface
 
                 $header->set('Location', $downloadServerIP . $payload);
                 $header->send();
-                exit;
+                return Response::createSuccessful($view, $header);
             }
 
             return Response::createNotFound();
