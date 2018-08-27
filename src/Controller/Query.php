@@ -106,14 +106,14 @@ class Query implements ControllerInterface
                 $hash = $matches[1] ?? null;
                 $query = new CheckPasswordResetHash($this->factory, $hash, new JsonView());
                 return $query->run();
-            case preg_match('/^\/upload-limits\/(\w{9,}).*$/', $uri, $matches) === 1:
+            case preg_match('/^\/upload_limits\/(\w{9,}).*$/', $uri, $matches) === 1:
                 $hash = $matches[1] ?? null;
                 $guestLinkDAO = LinkDAO::getLinkFromHash($hash);
                 if($guestLinkDAO === null){
                     throw new \InvalidArgumentException('Guestlink does not exist');
                 }
                 return (new GetUploadLimits($this->factory,$this->factory->getConfig()->getMaxFileSize()))->run();
-            case preg_match('/^\/upload-limits.*$/', $uri) === 1:
+            case preg_match('/^\/upload_limits.*$/', $uri) === 1:
                 $this->failWhenNotAuthenticated($user, $uri);
                 $quota = $user->getQuota();
                 if($quota === 0){

@@ -202,7 +202,7 @@ class Command implements ControllerInterface
                 case preg_match('/^\/upload.*$/', $path) === 1:
                     return (new UploadFile($this->storage, $user, $this->request, $this->factory))
                         ->execute();
-                case preg_match('/^\/request-upload\/(\w{9,}).*$/', $path, $matches) === 1:
+                case preg_match('/^\/request_upload\/(\w{9,}).*$/', $path, $matches) === 1:
                     $hash = $matches[1] ?? null;
                     $guestLinkDAO = LinkDAO::getLinkFromHash($hash);
                     if($guestLinkDAO === null){
@@ -210,7 +210,7 @@ class Command implements ControllerInterface
                     }
                     $maxUploadSize = $this->factory->getConfig()->getMaxFileSize();
                     return (new GenerateUploadToken($this->storage, $this->request, $this->factory, true, $maxUploadSize, $hash))->execute();
-                case preg_match('/^\/request-upload.*$/', $path) === 1:
+                case preg_match('/^\/request_upload.*$/', $path) === 1:
                     $this->failWhenNotAuthenticated($user, $path);
                     $maxUploadSize =  $user->getMaxUploadSize();
                     if($maxUploadSize === 0){
@@ -218,7 +218,7 @@ class Command implements ControllerInterface
                     }
                     return (new GenerateUploadToken($this->storage, $this->request, $this->factory, false,
                         $maxUploadSize, $user->getEmail(), $user->getQuota()))->execute();
-                case preg_match('/^\/delete-upload\/(\w{9,}).*$/', $path, $matches) === 1:
+                case preg_match('/^\/delete_upload\/(\w{9,}).*$/', $path, $matches) === 1:
                     $token = $matches[1] ?? null;
                     return (new DeleteUpload($this->storage, $token))->execute();
 
