@@ -236,6 +236,72 @@ class DatabaseStorage
     }
 
     /**
+     * @param string $linkHash
+     * @param string $auth
+     * @param string $owner
+     * @return bool
+     */
+    public function createDeleteAuth(string $linkHash, string $auth, string $owner): bool
+    {
+        $deleteAuth = R::findOne('deleteauth', 'hash = ? and auth = ? and owner = ?', [
+            $linkHash,
+            $auth,
+            $owner
+        ]);
+
+        if ($deleteAuth === null) {
+            $deleteAuth = R::dispense('deleteauth');
+        }
+
+        $deleteAuth->hash = $linkHash;
+        $deleteAuth->auth = $auth;
+        $deleteAuth->owner = $owner;
+
+        return R::store($deleteAuth) !== false;
+    }
+
+    /**
+     * @param string $linkHash
+     * @param string $auth
+     * @return string
+     */
+    public function getDeleteAuthOwnerEmail(string $linkHash, string $auth): string
+    {
+        $deleteAuth = R::findOne('deleteauth', 'hash = ? and auth = ?', [
+            $linkHash,
+            $auth,
+        ]);
+
+        if ($deleteAuth instanceof OODBBean) {
+            return $deleteAuth->owner;
+        }
+
+        return '';
+    }
+
+    /**
+     * @param string $linkHash
+     * @param string $auth
+     * @param string $owner
+     * @return bool
+     */
+    public function deleteDeleteAuth(string $linkHash, string $auth, string $owner): bool
+    {
+        $deleteAuth = R::findOne('deleteauth', 'hash = ? and auth = ? and owner = ?', [
+            $linkHash,
+            $auth,
+            $owner
+        ]);
+
+        if ($deleteAuth instanceof OODBBean) {
+            R::trash($deleteAuth);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Create attachment if it doesn't exist otherwise do nothing
      *
      * @param string $hash

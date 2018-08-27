@@ -125,17 +125,6 @@ class GuestLinkCest extends \JTL\Onetimelink\AuthenticationCest
         $I->assertEquals('test codeception image', $response);
     }
 
-    /**
-     * @depends tryToReceiveOneTimeLinkContent
-     */
-    public function tryToReceiveOneTimeLinkSecondTime(ApiTester $I)
-    {
-        $I->wantTo('Read twice from a link');
-
-        $I->sendGET($this->formerCreatedLink);
-        $I->seeResponseCodeIs(404);
-    }
-
     private function getTextContent(): string
     {
         return 'foo bar baz';

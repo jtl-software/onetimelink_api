@@ -13,6 +13,7 @@ use JTL\Onetimelink\Controller\Command\ActivateUser;
 use JTL\Onetimelink\Controller\Command\CreateGuestLink;
 use JTL\Onetimelink\Controller\Command\CreateLink;
 use JTL\Onetimelink\Controller\Command\CreateUser;
+use JTL\Onetimelink\Controller\Command\DeleteLink;
 use JTL\Onetimelink\Controller\Command\Login;
 use JTL\Onetimelink\Controller\Command\PasswordResetAction;
 use JTL\Onetimelink\Controller\Command\PasswordResetRequest;
@@ -187,6 +188,15 @@ class Command implements ControllerInterface
                     $this->failWhenNotAuthenticated($user, $path);
                     return (new CreateLink($this->storage, $user, $this->request, $this->factory))
                         ->execute();
+
+                case '/delete_link':
+                    return (new DeleteLink(
+                        $this->storage,
+                        $this->factory,
+                        $requestData['linkHash'],
+                        $requestData['auth']
+                    ))->execute();
+
             }
         }
 

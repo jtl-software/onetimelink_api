@@ -140,12 +140,19 @@ class ReadOneTimeLink extends AbstractObservable implements QueryInterface
         }
 
         $owner = null;
+        $downloadAttachment = [
+            'hash' => null,
+            'name' => null,
+        ];
 
         /** @var OODBBean $attachment */
         foreach ($attachments as $attachment) {
             if ($attachment->name === '-#-TEXTINPUT-#-') {
                 continue;
             }
+
+            $downloadAttachment['hash'] = $attachment->hash;
+            $downloadAttachment['name'] = $attachment->name;
 
             $payload = $this->storage->readAttachment($attachment->hash);
             $fileName = $this->factory->getConfig()->getTempDir() . '/';
@@ -171,6 +178,37 @@ class ReadOneTimeLink extends AbstractObservable implements QueryInterface
             );
         }
 
+        $useDownloadServer = $this->factory->getConfig()->shouldUseDownloadServer();
+        $downloadServerIP = $this->factory->getConfig()->getDownloadServerIP();
+
+        if ($useDownloadServer) {
+            $deleteAuth = bin2hex(random_bytes(64));
+            $this->storage->createDeleteAuth($this->hash, $deleteAuth, $owner->getEmail());
+            $this->logger->info('Sending filename ' . $fileName);
+
+            if ($fileName !== null && file_exists($fileName)) {
+                $payload = [
+                    'linkHash' => $this->hash,
+                    'attachmentHash' => $downloadAttachment['hash'],
+                    'attachmentName' => $downloadAttachment['name'],
+                    'auth' => $deleteAuth
+                ];
+                $payload = base64_encode(json_encode($payload));
+
+                $this->logger->info(
+                    "OTL/{$this->hash} picked up by user {$this->user} via download server",
+                    ['attachments' => $attachments]
+                );
+
+                $header->set('Location', $downloadServerIP . $payload);
+                $header->send();
+                return Response::createSuccessful($view, $header);
+            }
+
+            return Response::createNotFound();
+        }
+
+
         $header->set('X-OTL-Status', 'deleted');
         $userMeta = $this->factory->createUserMetaStorage($owner);
         $userMeta->setToDeleted($this->hash);
@@ -184,7 +222,6 @@ class ReadOneTimeLink extends AbstractObservable implements QueryInterface
         } else {
             return Response::createNotFound();
         }
-
 
         $this->logger->info("OTL/{$this->hash} picked up by user {$this->user}", ['attachments' => $attachments]);
         return Response::createSuccessful($view, $header);
