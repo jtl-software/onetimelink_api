@@ -53,22 +53,22 @@ class ReadOneTimeLinkTest extends TestCase
             ->with('name')
             ->willReturn('dummy');
 
-        $attachmentMock->expects($this->at(1))
+        $attachmentMock->expects($this->at(3))
             ->method('__get')
             ->with('hash')
             ->willReturn('dummy');
 
-        $attachmentMock->expects($this->at(2))
-            ->method('__get')
-            ->with('hash')
-            ->willReturn($attachmentHash);
-
-        $attachmentMock->expects($this->at(3))
-            ->method('__get')
-            ->with('hash')
-            ->willReturn($attachmentHash);
-
         $attachmentMock->expects($this->at(4))
+            ->method('__get')
+            ->with('hash')
+            ->willReturn($attachmentHash);
+
+        $attachmentMock->expects($this->at(5))
+            ->method('__get')
+            ->with('hash')
+            ->willReturn($attachmentHash);
+
+        $attachmentMock->expects($this->at(6))
             ->method('__get')
             ->with('name')
             ->willReturn($attachmentHash);
@@ -97,7 +97,7 @@ class ReadOneTimeLinkTest extends TestCase
 
         /** @var Factory|\PHPUnit_Framework_MockObject_MockObject $factoryMock */
         $factoryMock = $this->createMock(Factory::class);
-        $factoryMock->expects($this->exactly(3))
+        $factoryMock->expects($this->atLeast(3))
             ->method('getConfig')
             ->willReturn($configMock);
 

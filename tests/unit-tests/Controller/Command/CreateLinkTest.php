@@ -72,11 +72,6 @@ class CreateLinkTest extends TestCase
                 'amount' => 1
             ]);
 
-        $requestMock->expects($this->once())
-            ->method('readGet')
-            ->with('tags')
-            ->willReturn('[]');
-
         $user = User::createUserFromString('foo');
 
         /** @var ViewInterface|\PHPUnit_Framework_MockObject_MockObject $viewMock */
@@ -114,11 +109,6 @@ class CreateLinkTest extends TestCase
                 'file0' => 'uploaded_file.txt',
                 'amount' => 1
             ]);
-
-        $requestMock->expects($this->once())
-            ->method('readGet')
-            ->with('tags')
-            ->willReturn('[]');
 
         $user = User::createUserFromString('foo');
 
@@ -162,11 +152,6 @@ class CreateLinkTest extends TestCase
                 'text'  => 'uploaded text example',
                 'amount' => 1
             ]);
-
-        $requestMock->expects($this->once())
-            ->method('readGet')
-            ->with('tags')
-            ->willReturn('[]');
 
         $user = User::createUserFromString('foo');
 
