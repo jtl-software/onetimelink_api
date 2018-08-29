@@ -8,7 +8,6 @@
 
 namespace JTL\Onetimelink\Controller\Query;
 
-
 use JTL\Onetimelink\Config;
 use JTL\Onetimelink\Controller\QueryInterface;
 use JTL\Onetimelink\Factory;
@@ -56,7 +55,7 @@ class GetUploadLimits implements QueryInterface
      * @param int $quota
      * @param string|null $identifier
      */
-    function __construct(Factory $factory, int $maxUploadSize = 0, bool $isGuest = true, int $quota = 0, string $identifier = null)
+    public function __construct(Factory $factory, int $maxUploadSize = 0, bool $isGuest = true, int $quota = 0, string $identifier = null)
     {
         $this->view = new JsonView();
         $this->config = $factory->getConfig();
@@ -69,10 +68,10 @@ class GetUploadLimits implements QueryInterface
     public function run(): Response
     {
         $maxFileSize = $this->maxUploadSize;
-        if($maxFileSize === 0 || $maxFileSize > $this->config->getMaxFileSize()){
+        if ($maxFileSize === 0 || $maxFileSize > $this->config->getMaxFileSize()) {
             $maxFileSize = $this->config->getMaxFileSize();
         }
-        if($this->isGuest === false && $this->quota !== 0){
+        if ($this->isGuest === false && $this->quota !== 0) {
             $usedQuota = UserQuota::getUsedQuotaForUser($this->identifier);
             $this->view->set('usedQuota', $usedQuota);
             $this->view->set('quota', $this->quota);

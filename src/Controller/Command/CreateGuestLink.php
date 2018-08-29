@@ -89,7 +89,7 @@ class CreateGuestLink implements CommandInterface
         $isProtected = $data['protected'] ?? false;
 
         $this->logger->info("create {$amount} GuestLink(s)", ["user" => (string)$this->user]);
-        for($i = 0; $i < $amount; ++$i) {
+        for ($i = 0; $i < $amount; ++$i) {
             $hash = LinkHash::createUnique();
 
             if ($this->storage->writeGuestLink($hash, $this->user, $tags, $isProtected)) {
@@ -106,5 +106,4 @@ class CreateGuestLink implements CommandInterface
         $this->view->set('links', $links);
         return Response::createSuccessfulCreated($this->view);
     }
-
 }

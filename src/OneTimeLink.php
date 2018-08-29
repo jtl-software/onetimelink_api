@@ -8,7 +8,6 @@
 
 namespace JTL\Onetimelink;
 
-
 use JTL\Onetimelink\View\ViewInterface;
 
 class OneTimeLink
@@ -36,8 +35,7 @@ class OneTimeLink
     public function __construct(
         string $hash,
         User $user
-    )
-    {
+    ) {
         $this->hash = $hash;
         $this->user = $user;
     }

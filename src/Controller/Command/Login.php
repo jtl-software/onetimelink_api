@@ -8,7 +8,6 @@
 
 namespace JTL\Onetimelink\Controller\Command;
 
-
 use JTL\Onetimelink\Authentication\AuthenticationInterface;
 use JTL\Onetimelink\Controller\CommandInterface;
 use JTL\Onetimelink\Exception\AuthenticationException;
@@ -76,8 +75,7 @@ class Login implements CommandInterface
         Request $request,
         JsonView $view,
         Logger $logger
-    )
-    {
+    ) {
         $this->auth = $auth;
         $this->view = $view;
         $this->session = $session;

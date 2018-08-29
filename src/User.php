@@ -10,7 +10,6 @@ namespace JTL\Onetimelink;
 
 class User
 {
-
     const USER_ANONYMOUS = 'anonym@jtl-software.com';
 
     /**
@@ -153,7 +152,8 @@ class User
     /**
      * @param int $maxUploadSize
      */
-    public function setMaxUploadSize(int $maxUploadSize){
+    public function setMaxUploadSize(int $maxUploadSize)
+    {
         $this->maxUploadSize = $maxUploadSize;
     }
 
@@ -176,18 +176,21 @@ class User
     /**
      * @param int $quota
      */
-    public function setQuota(int $quota){
+    public function setQuota(int $quota)
+    {
         $this->quota = $quota;
     }
 
     /**
      * @return int
      */
-    public function getMaxUploadSize(){
+    public function getMaxUploadSize()
+    {
         return $this->maxUploadSize;
     }
 
-    public function getQuota(){
+    public function getQuota()
+    {
         return $this->quota;
     }
 

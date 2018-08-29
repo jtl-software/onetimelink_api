@@ -8,12 +8,10 @@
 
 namespace JTL\Onetimelink\Storage;
 
-
 use JTL\Onetimelink\User;
 
 class MetaData
 {
-
     const IDX_FILE_TYPE = 'filetype';
     const IDX_CREATED_BY_MAIL = 'user_email';
     const IDX_CREATED = 'created';
@@ -53,7 +51,6 @@ class MetaData
      */
     public static function createFromExistingMetaData(array $metaData): MetaData
     {
-
         if (!isset($metaData[self::IDX_FILE_TYPE])) {
             throw new \RuntimeException("Missing field " . self::IDX_FILE_TYPE);
         }
@@ -146,7 +143,8 @@ class MetaData
     /**
      * @return int
      */
-    public function getSize(): int {
+    public function getSize(): int
+    {
         return $this->size;
     }
 

@@ -46,8 +46,7 @@ class LinkDAO
         $attachments,
         $deleted = null,
         $is_protected_link = false
-    )
-    {
+    ) {
         $this->user = $user;
         $this->hash = $hash;
         $this->is_guest_link = $is_guest_link;
@@ -81,7 +80,8 @@ class LinkDAO
         return R::store($link) !== false;
     }
 
-    public function delete(): void {
+    public function delete(): void
+    {
         R::trash($this->loadDBObject());
     }
 

@@ -8,7 +8,6 @@
 
 namespace JTL\Onetimelink;
 
-
 use JTL\Onetimelink\Controller\Command;
 use JTL\Onetimelink\Controller\ControllerInterface;
 use JTL\Onetimelink\Controller\Query;
@@ -64,7 +63,6 @@ class Factory
      */
     public function createController(): ControllerInterface
     {
-
         $request = $this->config->createRequest();
         if ($request->isGet()) {
             return new Query(
@@ -124,7 +122,7 @@ class Factory
 
     public function createLogger(): Logger
     {
-        if($this->logger instanceof Logger){
+        if ($this->logger instanceof Logger) {
             return $this->logger;
         }
 
@@ -138,9 +136,7 @@ class Factory
             $this->logger->pushProcessor(new UidProcessor());
             $this->logger->pushProcessor(new MemoryUsageProcessor());
             $this->logger->pushProcessor(new IdentifyProcessor());
-
-
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             $this->logger->pushHandler(new NullHandler());
         }
 

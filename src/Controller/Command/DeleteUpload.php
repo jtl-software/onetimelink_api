@@ -8,7 +8,6 @@
 
 namespace JTL\Onetimelink\Controller\Command;
 
-
 use JTL\Onetimelink\Controller\CommandInterface;
 use JTL\Onetimelink\DAO\AttachmentDAO;
 use JTL\Onetimelink\DAO\UploadDAO;
@@ -41,7 +40,7 @@ class DeleteUpload implements CommandInterface
      * @param DatabaseStorage $storage
      * @param string $token
      */
-    function __construct(DatabaseStorage $storage, string $token)
+    public function __construct(DatabaseStorage $storage, string $token)
     {
         $this->storage = $storage;
         $this->token = $token;
@@ -50,10 +49,10 @@ class DeleteUpload implements CommandInterface
 
     public function execute(): Response
     {
-        if(($upload = UploadDAO::getUploadFromToken($this->token)) !== null){
+        if (($upload = UploadDAO::getUploadFromToken($this->token)) !== null) {
             $upload->delete();
         }
-        if(($attachment = AttachmentDAO::getAttachmentFromHash(LinkHash::create($this->token))) !== null){
+        if (($attachment = AttachmentDAO::getAttachmentFromHash(LinkHash::create($this->token))) !== null) {
             $this->storage->deleteAttachment($attachment->getHash());
             $attachment->delete();
         }

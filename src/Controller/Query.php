@@ -63,8 +63,7 @@ class Query implements ControllerInterface
         AuthenticationInterface $authentication,
         DatabaseStorage $storage,
         Factory $factory
-    )
-    {
+    ) {
         $this->request = $request;
         $this->authentication = $authentication;
         $this->storage = $storage;
@@ -110,17 +109,17 @@ class Query implements ControllerInterface
                 $hash = $matches[1] ?? null;
                 $guestLinkDAO = LinkDAO::getLinkFromHash($hash);
 
-                if($guestLinkDAO === null){
+                if ($guestLinkDAO === null) {
                     throw new \InvalidArgumentException('Guestlink does not exist');
                 }
 
-                return (new GetUploadLimits($this->factory,$this->factory->getConfig()->getMaxFileSize()))->run();
+                return (new GetUploadLimits($this->factory, $this->factory->getConfig()->getMaxFileSize()))->run();
 
             case preg_match('/^\/upload_limits.*$/', $uri) === 1:
                 $this->failWhenNotAuthenticated($user, $uri);
                 $quota = $user->getQuota();
 
-                if($quota === 0){
+                if ($quota === 0) {
                     $quota = $this->factory->getConfig()->getDefaultUserQuota();
                 }
 
@@ -128,7 +127,9 @@ class Query implements ControllerInterface
                     $this->factory,
                     $user->getMaxUploadSize(),
                     false,
-                    $quota, $user->getEmail());
+                    $quota,
+                    $user->getEmail()
+                );
                 return $query->run();
 
             case preg_match('/^\/_.*$/', $uri) === 1:
@@ -150,7 +151,7 @@ class Query implements ControllerInterface
             throw new AuthenticationException("{$user} is not allowed to perform operation (POST: {$path})");
         }
 
-        if(false === $user->isActive()){
+        if (false === $user->isActive()) {
             $this->logger->info("{$user->obfuscatedUsername()} is inactive and not allowed to perform operation (POST: {$path}) - active: false");
             throw new AuthenticationException("{$user} is inactive");
         }

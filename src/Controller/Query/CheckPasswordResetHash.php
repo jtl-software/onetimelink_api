@@ -8,7 +8,6 @@
 
 namespace JTL\Onetimelink\Controller\Query;
 
-
 use JTL\Onetimelink\Controller\QueryInterface;
 use JTL\Onetimelink\Factory;
 use JTL\Onetimelink\Response;

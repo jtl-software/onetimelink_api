@@ -8,7 +8,6 @@
 
 namespace JTL\Onetimelink;
 
-
 class LinkHash
 {
     public static function create(string $content, int $length = 24): string

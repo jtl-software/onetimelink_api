@@ -8,7 +8,6 @@
 
 namespace JTL\Onetimelink\Controller\Command;
 
-
 use JTL\Onetimelink\Controller\CommandInterface;
 use JTL\Onetimelink\Exception\MissingParameterException;
 use JTL\Onetimelink\Factory;
@@ -127,4 +126,3 @@ class PrepareLink implements CommandInterface
         return new Payload($data, $metaData);
     }
 }
-

@@ -8,7 +8,6 @@
 
 namespace JTL\Onetimelink;
 
-
 use JTL\Onetimelink\Authentication\AuthenticationInterface;
 use JTL\Onetimelink\Notification\Message\AbstractMessage;
 use JTL\Onetimelink\Notification\NotifierInterface;
@@ -151,21 +150,24 @@ class Config
     /**
      * @return int
      */
-    public function getChunkSize() : int {
+    public function getChunkSize() : int
+    {
         return $this->config['chunk-size'] * 1024 * 1024;
     }
 
     /**
      * @return int
      */
-    public function getMaxFileSize() : int{
+    public function getMaxFileSize() : int
+    {
         return $this->config['max-file-size'] * 1024 * 1024;
     }
 
     /**
      * @return int
      */
-    public function getDefaultUserQuota() : int {
+    public function getDefaultUserQuota() : int
+    {
         return $this->config['default-quota'] * 1024 * 1024;
     }
 
@@ -229,7 +231,6 @@ class Config
         string $email,
         string $activationLink
     ): AbstractMessage {
-
         $activationLink = $this->getUserInterfaceHost() . '/#/user/activate/' . $activationLink;
         return $this->config['activate-user']($email, $activationLink);
     }
@@ -241,7 +242,6 @@ class Config
     public function createMessageActivateUser(
         string $email
     ): AbstractMessage {
-
         return $this->config['activated-user']($email);
     }
 
@@ -265,8 +265,7 @@ class Config
     public function createMessageForPasswordReset(
         string $email,
         string $hash
-    ): AbstractMessage
-    {
+    ): AbstractMessage {
         $resetLink = $this->getUserInterfaceHost() . '/#/password/reset/' . $hash;
         return $this->config['message-password-reset']($email, $hash, $resetLink);
     }
@@ -350,5 +349,4 @@ class Config
     {
         return $this->config['download_server_ip'];
     }
-
 }

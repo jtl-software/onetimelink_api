@@ -8,7 +8,6 @@
 
 namespace JTL\Onetimelink;
 
-
 /**
  * Class UserList
  * @package JTL\Onetimelink
@@ -45,7 +44,6 @@ class UserList
     {
         $user = User::createAnonymousUser();
         if (isset($this->userList[$email])) {
-
             $user = User::createFromCredentials(
                 $email,
                 PasswordHash::createFromHash($this->userList[$email]['password'])

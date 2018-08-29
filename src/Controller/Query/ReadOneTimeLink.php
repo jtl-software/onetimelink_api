@@ -73,7 +73,7 @@ class ReadOneTimeLink extends AbstractObservable implements QueryInterface
         Request $request,
         Factory $factory,
         bool $viewing
-    ){
+    ) {
         $this->storage = $storage;
         $this->hash = $hash;
         $this->user = $user;
@@ -131,7 +131,7 @@ class ReadOneTimeLink extends AbstractObservable implements QueryInterface
                             )
                         );
                     }
-                } else if ($attachment->getDeleted()) {
+                } elseif ($attachment->getDeleted()) {
                     return Response::createNotFound();
                 }
             }

@@ -8,7 +8,6 @@
 
 namespace JTL\Onetimelink\Controller\Command;
 
-
 use JTL\Onetimelink\Controller\CommandInterface;
 use JTL\Onetimelink\DAO\AttachmentDAO;
 use JTL\Onetimelink\Factory;
@@ -84,8 +83,8 @@ class CreateLink implements CommandInterface
         Request $request,
         Factory $factory,
         array $tags = [],
-        bool $isProtected = false)
-    {
+        bool $isProtected = false
+    ) {
         $this->storage = $storage;
         $this->request = $request;
         $this->view = $factory->createJsonView();
@@ -192,4 +191,3 @@ class CreateLink implements CommandInterface
         return Response::createSuccessfulCreated($this->view);
     }
 }
-

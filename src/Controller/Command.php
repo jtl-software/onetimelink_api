@@ -172,7 +172,7 @@ class Command implements ControllerInterface
                     $guestLinkDAO = LinkDAO::getLinkFromHash($hash);
                     $tags = $guestLinkDAO->getTags();
                     $isProtected = $guestLinkDAO->isProtectedLink();
-                    if($guestLinkDAO->getDeleted() !== null) {
+                    if ($guestLinkDAO->getDeleted() !== null) {
                         throw new \InvalidArgumentException('Guestlink has already been used');
                     }
                     $createLink = new CreateLink($this->storage, $user, $this->request, $this->factory, $tags, $isProtected);
@@ -190,10 +190,10 @@ class Command implements ControllerInterface
                 case preg_match('/^\/upload\/(\w{9,}).*$/', $path, $matches) === 1:
                     $hash = $matches[1] ?? null;
                     $guestLinkDAO = LinkDAO::getLinkFromHash($hash);
-                    if($guestLinkDAO === null){
+                    if ($guestLinkDAO === null) {
                         throw new \InvalidArgumentException('Guestlink does not exist');
                     }
-                    if($guestLinkDAO->getDeleted() !== null){
+                    if ($guestLinkDAO->getDeleted() !== null) {
                         throw new \InvalidArgumentException('Guestlink has already been used');
                     }
                     return (new UploadFile($this->storage, $user, $this->request, $this->factory))
@@ -206,20 +206,25 @@ class Command implements ControllerInterface
                 case preg_match('/^\/request_upload\/(\w{9,}).*$/', $path, $matches) === 1:
                     $hash = $matches[1] ?? null;
                     $guestLinkDAO = LinkDAO::getLinkFromHash($hash);
-                    if($guestLinkDAO === null){
+                    if ($guestLinkDAO === null) {
                         throw new \InvalidArgumentException('Guestlink does not exist');
                     }
                     $maxUploadSize = $this->factory->getConfig()->getMaxFileSize();
-                    return (new GenerateUploadToken($this->storage,true, $maxUploadSize, $hash))->execute();
+                    return (new GenerateUploadToken($this->storage, true, $maxUploadSize, $hash))->execute();
 
                 case preg_match('/^\/request_upload.*$/', $path) === 1:
                     $this->failWhenNotAuthenticated($user, $path);
                     $maxUploadSize =  $user->getMaxUploadSize();
-                    if($maxUploadSize === 0){
+                    if ($maxUploadSize === 0) {
                         $maxUploadSize = $this->factory->getConfig()->getMaxFileSize();
                     }
-                    return (new GenerateUploadToken($this->storage,false,
-                        $maxUploadSize, $user->getEmail(), $user->getQuota()))->execute();
+                    return (new GenerateUploadToken(
+                        $this->storage,
+                        false,
+                        $maxUploadSize,
+                        $user->getEmail(),
+                        $user->getQuota()
+                    ))->execute();
 
                 case preg_match('/^\/delete_upload\/(\w{9,}).*$/', $path, $matches) === 1:
                     $token = $matches[1] ?? null;
@@ -244,7 +249,7 @@ class Command implements ControllerInterface
             throw new AuthenticationException("{$user} is not allowed to perform operation (POST: {$path})");
         }
 
-        if(false === $user->isActive()){
+        if (false === $user->isActive()) {
             $this->logger->info("{$user->obfuscatedUsername()} is inactive and not allowed to perform operation (POST: {$path}) - active: false");
             throw new AuthenticationException("{$user} is inactive");
         }

@@ -18,7 +18,8 @@ use JTL\Onetimelink\Storage\DatabaseStorage;
 use JTL\Onetimelink\UserQuota;
 use JTL\Onetimelink\View\JsonView;
 
-class GenerateUploadToken implements CommandInterface {
+class GenerateUploadToken implements CommandInterface
+{
 
     /**
      * @var JsonView
@@ -58,9 +59,13 @@ class GenerateUploadToken implements CommandInterface {
      * @param string|null $identifier
      * @param int $quota
      */
-    public function __construct(DatabaseStorage $storage, bool $isGuest, int $maxUploadSize = 0,
-                                string $identifier = null, int $quota = 0)
-    {
+    public function __construct(
+        DatabaseStorage $storage,
+        bool $isGuest,
+        int $maxUploadSize = 0,
+                                string $identifier = null,
+        int $quota = 0
+    ) {
         $this->maxUploadSize = $maxUploadSize;
         $this->view = new JsonView();
         $this->identifier = $identifier;
@@ -77,15 +82,15 @@ class GenerateUploadToken implements CommandInterface {
     {
         $token = LinkHash::createUnique();
 
-        if(($upload = UploadDAO::getUploadFromIdentifier($this->identifier)) !== null
-            && $this->isGuest === true){
+        if (($upload = UploadDAO::getUploadFromIdentifier($this->identifier)) !== null
+            && $this->isGuest === true) {
             $token = $upload->getToken();
             $this->removeExistingUpload($token);
         }
 
-        if($this->isGuest === false && $this->quota !== 0){
+        if ($this->isGuest === false && $this->quota !== 0) {
             $usedQuota = UserQuota::getUsedQuotaForUser($this->identifier);
-            if($usedQuota >= $this->quota){
+            if ($usedQuota >= $this->quota) {
                 throw new \RuntimeException('Quota used');
             }
         }
@@ -94,8 +99,10 @@ class GenerateUploadToken implements CommandInterface {
             $token,
             0,
             $this->maxUploadSize,
-            false, $this->identifier,
-            (new \DateTimeImmutable('now'))->format('c'));
+            false,
+            $this->identifier,
+            (new \DateTimeImmutable('now'))->format('c')
+        );
         $uploadDAO->save();
         $this->view->set('uploadToken', $token);
         return Response::createSuccessful($this->view);
@@ -105,8 +112,9 @@ class GenerateUploadToken implements CommandInterface {
     /**
      * @param string $token
      */
-    private function removeExistingUpload(string $token):void {
-        if($attachment = AttachmentDAO::getAttachmentFromHash(LinkHash::create($token))){
+    private function removeExistingUpload(string $token):void
+    {
+        if ($attachment = AttachmentDAO::getAttachmentFromHash(LinkHash::create($token))) {
             $this->storage->deleteAttachment($attachment->getHash());
             $attachment->delete();
         }

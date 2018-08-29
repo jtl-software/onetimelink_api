@@ -18,7 +18,6 @@ use RedBeanPHP\R;
 
 class DatabaseStorage
 {
-
     const DATETIME_FORMAT = 'Y-m-d H:i:s';
 
     /** @var LocationDirectory */
@@ -63,7 +62,7 @@ class DatabaseStorage
 
         $attachment = AttachmentDAO::getAttachmentFromHash($hash);
         if ($attachment !== null) {
-            if(($fileSize = filesize($this->getDataFileLocation($hash))) === false){
+            if (($fileSize = filesize($this->getDataFileLocation($hash))) === false) {
                 return false;
             }
             $attachment->setIsMerged(true);
@@ -127,8 +126,8 @@ class DatabaseStorage
         array $attachments,
         User $user,
         array $tags = [],
-        bool $isProtectedLink = false): bool
-    {
+        bool $isProtectedLink = false
+    ): bool {
         $attachmentBeans = [];
         /** @var AttachmentDAO $attachment */
         foreach ($attachments as $attachment) {
@@ -165,8 +164,8 @@ class DatabaseStorage
         string $hash,
         User $user,
         array $tags = [],
-        bool $isProtected = false): bool
-    {
+        bool $isProtected = false
+    ): bool {
         $link = R::dispense('link');
         $link->user = (string)$user;
         $link->tags = implode(',', $tags);
@@ -204,7 +203,8 @@ class DatabaseStorage
         return new Payload('', MetaData::createFromExistingMetaData($attachment->toArray()));
     }
 
-    public function deleteAttachment(string $hash){
+    public function deleteAttachment(string $hash)
+    {
         unlink($this->getAttachmentLocation($hash));
     }
 

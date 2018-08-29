@@ -8,7 +8,6 @@
 
 namespace JTL\Onetimelink\Controller\Command;
 
-
 use JTL\Onetimelink\Config;
 use JTL\Onetimelink\Controller\CommandInterface;
 use JTL\Onetimelink\DAO\UploadDAO;
@@ -91,17 +90,17 @@ class UploadFile implements CommandInterface
 
         $uploadDAO = UploadDAO::getUploadFromToken($uploadToken);
 
-        if($uploadDAO === null){
+        if ($uploadDAO === null) {
             throw new \RuntimeException('Invalid upload token');
         }
 
-        if($uploadDAO->isDone()){
+        if ($uploadDAO->isDone()) {
             throw new \RuntimeException('Token already expired');
         }
 
         $hash = LinkHash::create($uploadToken);
 
-        if($payload->getMetaData()->getSize() > $chunkSize){
+        if ($payload->getMetaData()->getSize() > $chunkSize) {
             throw new \RuntimeException('Failed to store Data. Chunk too big');
         }
 
@@ -113,12 +112,11 @@ class UploadFile implements CommandInterface
         $receivedBytes = $uploadDAO->getReceivedBytes();
         $maxUploadSize = $uploadDAO->getMaxUploadSize();
         $receivedBytes += $payload->getMetaData()->getSize();
-        if($receivedBytes > $maxFileSize){
+        if ($receivedBytes > $maxFileSize) {
             throw new \RuntimeException('Received too many chunks. File size limit hit');
         }
 
-        if($maxUploadSize !== 0 && $receivedBytes > $maxUploadSize)
-        {
+        if ($maxUploadSize !== 0 && $receivedBytes > $maxUploadSize) {
             throw new \RuntimeException('Quota has been exceeded. Upload cancelled.');
         }
 

@@ -8,7 +8,6 @@
 
 namespace JTL\Onetimelink\Notification\Message;
 
-
 abstract class AbstractMessage
 {
 

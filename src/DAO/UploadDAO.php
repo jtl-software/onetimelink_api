@@ -8,7 +8,6 @@
 
 namespace JTL\Onetimelink\DAO;
 
-
 use RedBeanPHP\OODBBean;
 use RedBeanPHP\R;
 
@@ -53,15 +52,14 @@ class UploadDAO
      * @param string|null $identifier
      * @param string|null $created
      */
-    function __construct(
+    public function __construct(
         $token,
         $receivedBytes = 0,
         $maxUploadSize = 0,
         bool $done = false,
         string $identifier = null,
         string $created = null
-    )
-    {
+    ) {
         $this->token = $token;
         $this->receivedBytes = $receivedBytes;
         $this->maxUploadSize = $maxUploadSize;
@@ -77,7 +75,7 @@ class UploadDAO
     {
         $upload = R::findOne('upload', 'token = ?', [$this->token]);
 
-        if(!$upload instanceof OODBBean){
+        if (!$upload instanceof OODBBean) {
             $upload = R::dispense('upload');
         }
 
@@ -90,14 +88,16 @@ class UploadDAO
         return R::store($upload);
     }
 
-    public function delete() : void{
+    public function delete() : void
+    {
         R::trash($this->loadDBObject());
     }
 
     /**
      * @param string $token
      */
-    public function setToken(string $token){
+    public function setToken(string $token)
+    {
         $this->token = $token;
     }
 
@@ -112,7 +112,8 @@ class UploadDAO
     /**
      * @param int $receivedBytes
      */
-    public function setReceivedBytes(int $receivedBytes){
+    public function setReceivedBytes(int $receivedBytes)
+    {
         $this->receivedBytes = $receivedBytes;
     }
 
@@ -143,7 +144,8 @@ class UploadDAO
     /**
      * @param bool $done
      */
-    public function setDone(bool $done){
+    public function setDone(bool $done)
+    {
         $this->done = $done;
     }
 
@@ -158,28 +160,32 @@ class UploadDAO
     /**
      * @param string $identifier
      */
-    public function setIdentifier(string $identifier){
+    public function setIdentifier(string $identifier)
+    {
         $this->identifier = $identifier;
     }
 
     /**
      * @return string
      */
-    public function getIdentifier() : string {
+    public function getIdentifier() : string
+    {
         return $this->identifier;
     }
 
     /**
      * @param string $created
      */
-    public function setCreated(string $created){
+    public function setCreated(string $created)
+    {
         $this->created = $created;
     }
 
     /**
      * @return string
      */
-    public function getCreated(){
+    public function getCreated()
+    {
         return $this->created;
     }
 
@@ -202,7 +208,7 @@ class UploadDAO
     {
         $upload = R::findOne('upload', 'token = ?', [$token]);
 
-        if($upload instanceof OODBBean){
+        if ($upload instanceof OODBBean) {
             return new self(
                 $upload->token,
                 $upload->receivedBytes,
@@ -224,7 +230,7 @@ class UploadDAO
     {
         $upload = R::findOne('upload', 'identifier = ?', [$identifier]);
 
-        if($upload instanceof OODBBean){
+        if ($upload instanceof OODBBean) {
             return new self(
                 $upload->token,
                 $upload->receivedBytes,

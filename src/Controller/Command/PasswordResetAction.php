@@ -8,7 +8,6 @@
 
 namespace JTL\Onetimelink\Controller\Command;
 
-
 use JTL\Onetimelink\Controller\AbstractObservable;
 use JTL\Onetimelink\Controller\CommandInterface;
 use JTL\Onetimelink\Factory;
@@ -61,7 +60,7 @@ class PasswordResetAction extends AbstractObservable implements CommandInterface
         UserStorage $userStorage,
         ViewInterface $view,
         Logger $logger
-    ){
+    ) {
         $this->email = $email;
         $this->newPassword = $newPassword;
         $this->userStorage = $userStorage;
@@ -94,7 +93,7 @@ class PasswordResetAction extends AbstractObservable implements CommandInterface
                 $userList['user'][$email]['reset_hash'] = null;
                 $userList['user'][$email]['reset_hash_created'] = null;
 
-                if($this->userStorage->write($userList) === true){
+                if ($this->userStorage->write($userList) === true) {
                     $this->view->set('success', true);
 
                     $this->logger->info("Password reset for user {$obfuscated} successful");

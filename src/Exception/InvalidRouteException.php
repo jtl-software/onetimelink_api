@@ -8,7 +8,6 @@
 
 namespace JTL\Onetimelink\Exception;
 
-
 class InvalidRouteException extends \Exception
 {
 }

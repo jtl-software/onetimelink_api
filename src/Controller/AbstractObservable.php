@@ -44,5 +44,4 @@ abstract class AbstractObservable implements ObservableInterface
     {
         $this->notifier = $notifier;
     }
-
 }

@@ -8,7 +8,6 @@
 
 namespace JTL\Onetimelink\Authentication;
 
-
 use JTL\Onetimelink\Exception\AuthenticationException;
 use JTL\Onetimelink\Request;
 use JTL\Onetimelink\User;
@@ -48,7 +47,6 @@ class BasicAuth implements AuthenticationInterface
      */
     public function authenticate(UserList $userList): User
     {
-
         $_ = $this->request->getSession()->getAuthenticatedUser($this->authToken);
         if ($_ instanceof User) {
             return $_;
@@ -81,6 +79,4 @@ class BasicAuth implements AuthenticationInterface
 
         throw new AuthenticationException("User {$user} is not authenticated.");
     }
-
-
 }

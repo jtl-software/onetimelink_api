@@ -8,7 +8,6 @@
 
 namespace JTL\Onetimelink\Storage;
 
-
 class LocationDirectory
 {
 

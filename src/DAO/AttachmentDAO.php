@@ -46,8 +46,7 @@ class AttachmentDAO
         $hash,
         $isMerged,
         $size = 0
-    )
-    {
+    ) {
         $this->userEmail = $email;
         $this->created = $created;
         $this->deleted = $deleted;
@@ -78,7 +77,8 @@ class AttachmentDAO
         return R::store($attachment) !== false;
     }
 
-    public function delete() : void{
+    public function delete() : void
+    {
         R::trash($this->loadDBObject());
     }
 
@@ -225,14 +225,16 @@ class AttachmentDAO
         $this->isMerged = $isMerged;
     }
 
-    public function getSize(){
+    public function getSize()
+    {
         return $this->size;
     }
 
     /**
      * @param int $size
      */
-    public function setSize(int $size){
+    public function setSize(int $size)
+    {
         $this->size = $size;
     }
 
@@ -252,5 +254,4 @@ class AttachmentDAO
             'size' => $this->getSize(),
         ];
     }
-
 }

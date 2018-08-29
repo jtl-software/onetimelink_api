@@ -8,7 +8,6 @@
 
 namespace JTL\Onetimelink\Controller\Command;
 
-
 use JTL\Onetimelink\Controller\AbstractObservable;
 use JTL\Onetimelink\Controller\CommandInterface;
 use JTL\Onetimelink\Exception\DataNotFoundException;
