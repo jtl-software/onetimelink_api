@@ -81,6 +81,10 @@ class LinkDAO
         return R::store($link) !== false;
     }
 
+    public function delete(): void {
+        R::trash($this->loadDBObject());
+    }
+
     public function loadDBObject(): ?OODBBean
     {
         $linkBean = R::findOne('link', 'hash = ?', [$this->getHash()]);
@@ -122,7 +126,7 @@ class LinkDAO
                 $link->user,
                 $link->hash,
                 $link->isGuestLink,
-                $link->tags,
+                array_values(array_filter(explode(',', $link->tags), '\strlen')),
                 $link->created,
                 $link->sharedAttachmentList,
                 $link->deleted,

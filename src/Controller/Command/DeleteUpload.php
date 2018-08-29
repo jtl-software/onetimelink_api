@@ -36,6 +36,11 @@ class DeleteUpload implements CommandInterface
     private $view;
 
 
+    /**
+     * DeleteUpload constructor.
+     * @param DatabaseStorage $storage
+     * @param string $token
+     */
     function __construct(DatabaseStorage $storage, string $token)
     {
         $this->storage = $storage;
@@ -45,12 +50,12 @@ class DeleteUpload implements CommandInterface
 
     public function execute(): Response
     {
-        if($upload = UploadDAO::getUploadFromToken($this->token)){
-            R::trash($upload->loadDBObject());
+        if(($upload = UploadDAO::getUploadFromToken($this->token)) !== null){
+            $upload->delete();
         }
-        if($attachment = AttachmentDAO::getAttachmentFromHash(LinkHash::create($this->token))){
+        if(($attachment = AttachmentDAO::getAttachmentFromHash(LinkHash::create($this->token))) !== null){
             $this->storage->deleteAttachment($attachment->getHash());
-            R::trash($attachment->loadDBObject());
+            $attachment->delete();
         }
         return Response::createSuccessful($this->view);
     }

@@ -167,7 +167,7 @@ class MetaData
             self::IDX_FILE_TYPE => $this->getFileType(),
             self::IDX_CREATED_BY_MAIL => (string)$this->getUser(),
             self::IDX_ORIGINAL_FILE_NAME => $this->getFilename(),
-            self::IDX_CREATED => $this->created->format('c')
+            self::IDX_CREATED => $this->created->format('c'),
         ];
         return $_;
     }

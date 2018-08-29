@@ -45,13 +45,12 @@ class GenerateUploadTokenTest extends TestCase
 
     public function testCanGenerateUploadToken(){
         $mockDatabaseStorege = $this->createMock(DatabaseStorage::class);
-        $mockRequest = $this->createMock(Request::class);
         $mockFactory = $this->createMock(Factory::class);
         $isGuest = true;
         $maxUploadSize = random_int(100,100000);
         $identifier = uniqid('identifier', true);
 
-        $generateUploadTokenCommand = new GenerateUploadToken($mockDatabaseStorege, $mockRequest, $mockFactory, $isGuest,
+        $generateUploadTokenCommand = new GenerateUploadToken($mockDatabaseStorege, $isGuest,
             $maxUploadSize, $identifier);
 
         $result = $generateUploadTokenCommand->execute();

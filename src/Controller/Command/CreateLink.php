@@ -142,7 +142,7 @@ class CreateLink implements CommandInterface
 
         /** @var array $data */
         foreach ($data as $key => $value) {
-            if ($key === 'amount' || $key == 'tags') {
+            if ($key === 'amount' || $key === 'tags') {
                 continue;
             }
 

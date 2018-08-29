@@ -57,6 +57,13 @@ class UploadFile implements CommandInterface
      */
     private $config;
 
+    /**
+     * UploadFile constructor.
+     * @param DatabaseStorage $storage
+     * @param User $user
+     * @param Request $request
+     * @param Factory $factory
+     */
     public function __construct(DatabaseStorage $storage, User $user, Request $request, Factory $factory)
     {
         $this->storage = $storage;
@@ -67,6 +74,10 @@ class UploadFile implements CommandInterface
         $this->config = $factory->getConfig();
     }
 
+    /**
+     * @return Response
+     * @throws MissingParameterException
+     */
     public function execute(): Response
     {
         $chunkSize = $this->config->getChunkSize();
@@ -76,7 +87,6 @@ class UploadFile implements CommandInterface
 
         $chunkNumber = $this->request->readPost('resumableChunkNumber');
         $totalChunks = $this->request->readPost('resumableTotalChunks');
-
         $uploadToken = $this->request->readPost('uploadToken');
 
         $uploadDAO = UploadDAO::getUploadFromToken($uploadToken);
@@ -102,14 +112,14 @@ class UploadFile implements CommandInterface
 
         $receivedBytes = $uploadDAO->getReceivedBytes();
         $maxUploadSize = $uploadDAO->getMaxUploadSize();
-        $receivedBytes = $receivedBytes + $payload->getMetaData()->getSize();
-        if($receivedBytes > $maxFileSize + 1024){
-            throw new \RuntimeException('Received too much chunks. File size limit hit');
+        $receivedBytes += $payload->getMetaData()->getSize();
+        if($receivedBytes > $maxFileSize){
+            throw new \RuntimeException('Received too many chunks. File size limit hit');
         }
 
-        if($maxUploadSize !== 0 && $receivedBytes > $maxUploadSize + 1024)
+        if($maxUploadSize !== 0 && $receivedBytes > $maxUploadSize)
         {
-            throw new \RuntimeException('maxUploadSize reached');
+            throw new \RuntimeException('Quota has been exceeded. Upload cancelled.');
         }
 
         if ($chunkNumber <= $totalChunks && $this->storage->writeChunk($hash, $chunkNumber, $payload)) {

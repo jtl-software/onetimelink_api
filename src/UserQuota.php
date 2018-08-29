@@ -17,7 +17,7 @@ class UserQuota
      * @param $email
      * @return int
      */
-    public function getUsedQuotaForUser($email){
+    public static function getUsedQuotaForUser($email){
         $usedQuota = R::getRow('SELECT SUM(size) AS size FROM attachment WHERE user_email = ?', [$email]);
         return $usedQuota['size'] ?? 0;
     }

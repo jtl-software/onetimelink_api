@@ -24,11 +24,6 @@ class GetUploadLimits implements QueryInterface
     private $view;
 
     /**
-     * @var Factory
-     */
-    private $factory;
-
-    /**
      * @var Config
      */
     private $config;
@@ -53,11 +48,18 @@ class GetUploadLimits implements QueryInterface
      */
     private $identifier;
 
+    /**
+     * GetUploadLimits constructor.
+     * @param Factory $factory
+     * @param int $maxUploadSize
+     * @param bool $isGuest
+     * @param int $quota
+     * @param string|null $identifier
+     */
     function __construct(Factory $factory, int $maxUploadSize = 0, bool $isGuest = true, int $quota = 0, string $identifier = null)
     {
         $this->view = new JsonView();
-        $this->factory = $factory;
-        $this->config = $this->factory->getConfig();
+        $this->config = $factory->getConfig();
         $this->maxUploadSize = $maxUploadSize;
         $this->isGuest = $isGuest;
         $this->quota = $quota;
@@ -67,11 +69,11 @@ class GetUploadLimits implements QueryInterface
     public function run(): Response
     {
         $maxFileSize = $this->maxUploadSize;
-        if($maxFileSize === 0 || $this->maxUploadSize > $this->config->getMaxFileSize()){
+        if($maxFileSize === 0 || $maxFileSize > $this->config->getMaxFileSize()){
             $maxFileSize = $this->config->getMaxFileSize();
         }
         if($this->isGuest === false && $this->quota !== 0){
-            $usedQuota = (new UserQuota())->getUsedQuotaForUser($this->identifier);
+            $usedQuota = UserQuota::getUsedQuotaForUser($this->identifier);
             $this->view->set('usedQuota', $usedQuota);
             $this->view->set('quota', $this->quota);
         }

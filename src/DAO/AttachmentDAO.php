@@ -78,6 +78,10 @@ class AttachmentDAO
         return R::store($attachment) !== false;
     }
 
+    public function delete() : void{
+        R::trash($this->loadDBObject());
+    }
+
     public function loadDBObject(): ?OODBBean
     {
         $attachmentBean = R::findOne('attachment', 'hash = ?', [$this->getHash()]);

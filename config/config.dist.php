@@ -57,7 +57,6 @@ return [
         if(!empty($tags)){
             $subjectExt = '['.implode('][', $tags).'] ';
         }
-        $subjectExt = mb_convert_encoding($subjectExt, 'Windows-1252', 'auto');
 
         return new HTMLMessage(
             $user->getEmail(),
@@ -140,9 +139,6 @@ return [
     # Path for File Storage
     'storage-directory' => __DIR__ . '/../../data',
 
-    # Path for File Storage
-    'user-storage-directory' =>  __DIR__ . '/../../user',
-
     # Storage Engine
     'storage' => function (string $directory): DatabaseStorage {
         return new DatabaseStorage(new LocationDirectory($directory));
@@ -198,8 +194,10 @@ return [
 
     'allow-user-with-mail' => '/.*@(jtl-software|example)\.com$/',
 
-    'root_dir' => __DIR__ . '/../',
     'tmp_dir' => '/application/data',
+    'user-activation-secret' => '##secret##',
 
+    'use_download_server' => true,
+    'download_server_ip' => 'http://127.0.0.1:3141/',
 
 ];

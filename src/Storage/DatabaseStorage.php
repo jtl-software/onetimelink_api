@@ -63,8 +63,11 @@ class DatabaseStorage
 
         $attachment = AttachmentDAO::getAttachmentFromHash($hash);
         if ($attachment !== null) {
+            if(($fileSize = filesize($this->getDataFileLocation($hash))) === false){
+                return false;
+            }
             $attachment->setIsMerged(true);
-            $attachment->setSize(filesize($this->getDataFileLocation($hash)));
+            $attachment->setSize($fileSize);
             return $attachment->save() !== false;
         }
 
@@ -273,7 +276,7 @@ class DatabaseStorage
      */
     private function getDirectory(string $hash): string
     {
-        $directory = (string)$this->directory . substr($hash, 0, 10);
+        $directory = (string)$this->directory . substr($hash, 0, 2);
         if (!is_dir($directory)) {
             if (!mkdir($directory) && !is_dir($directory)) {
                 throw new \RuntimeException(sprintf('Directory "%s" was not created', $directory));

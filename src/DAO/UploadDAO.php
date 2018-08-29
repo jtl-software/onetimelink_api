@@ -44,7 +44,23 @@ class UploadDAO
      */
     private $created;
 
-    function __construct($token, $receivedBytes = 0, $maxUploadSize = 0, bool $done = false, string $identifier = null, string $created = null)
+    /**
+     * UploadDAO constructor.
+     * @param $token
+     * @param int $receivedBytes
+     * @param int $maxUploadSize
+     * @param bool $done
+     * @param string|null $identifier
+     * @param string|null $created
+     */
+    function __construct(
+        $token,
+        $receivedBytes = 0,
+        $maxUploadSize = 0,
+        bool $done = false,
+        string $identifier = null,
+        string $created = null
+    )
     {
         $this->token = $token;
         $this->receivedBytes = $receivedBytes;
@@ -72,6 +88,10 @@ class UploadDAO
         $upload->done = $this->isDone();
         $upload->created = $this->getCreated();
         return R::store($upload);
+    }
+
+    public function delete() : void{
+        R::trash($this->loadDBObject());
     }
 
     /**

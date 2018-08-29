@@ -14,7 +14,6 @@ use JTL\Onetimelink\Controller\Query\CheckOneTimeLink;
 use JTL\Onetimelink\Controller\Query\CheckPasswordResetHash;
 use JTL\Onetimelink\Controller\Query\GetUploadLimits;
 use JTL\Onetimelink\Controller\Query\ReadOneTimeLink;
-use JTL\Onetimelink\Controller\Query\GenerateUploadToken;
 use JTL\Onetimelink\DAO\LinkDAO;
 use JTL\Onetimelink\Exception\AuthenticationException;
 use JTL\Onetimelink\Exception\InvalidRouteException;
@@ -106,20 +105,31 @@ class Query implements ControllerInterface
                 $hash = $matches[1] ?? null;
                 $query = new CheckPasswordResetHash($this->factory, $hash, new JsonView());
                 return $query->run();
+
             case preg_match('/^\/upload_limits\/(\w{9,}).*$/', $uri, $matches) === 1:
                 $hash = $matches[1] ?? null;
                 $guestLinkDAO = LinkDAO::getLinkFromHash($hash);
+
                 if($guestLinkDAO === null){
                     throw new \InvalidArgumentException('Guestlink does not exist');
                 }
+
                 return (new GetUploadLimits($this->factory,$this->factory->getConfig()->getMaxFileSize()))->run();
+
             case preg_match('/^\/upload_limits.*$/', $uri) === 1:
                 $this->failWhenNotAuthenticated($user, $uri);
                 $quota = $user->getQuota();
+
                 if($quota === 0){
                     $quota = $this->factory->getConfig()->getDefaultUserQuota();
                 }
-                return (new GetUploadLimits($this->factory, $user->getMaxUploadSize(), false, $quota, $user->getEmail()))->run();
+
+                $query = new GetUploadLimits(
+                    $this->factory,
+                    $user->getMaxUploadSize(),
+                    false,
+                    $quota, $user->getEmail());
+                return $query->run();
 
             case preg_match('/^\/_.*$/', $uri) === 1:
                 return (new CheckLogin($user, $this->factory))->run();

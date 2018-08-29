@@ -202,6 +202,7 @@ class Command implements ControllerInterface
                 case preg_match('/^\/upload.*$/', $path) === 1:
                     return (new UploadFile($this->storage, $user, $this->request, $this->factory))
                         ->execute();
+
                 case preg_match('/^\/request_upload\/(\w{9,}).*$/', $path, $matches) === 1:
                     $hash = $matches[1] ?? null;
                     $guestLinkDAO = LinkDAO::getLinkFromHash($hash);
@@ -209,15 +210,17 @@ class Command implements ControllerInterface
                         throw new \InvalidArgumentException('Guestlink does not exist');
                     }
                     $maxUploadSize = $this->factory->getConfig()->getMaxFileSize();
-                    return (new GenerateUploadToken($this->storage, $this->request, $this->factory, true, $maxUploadSize, $hash))->execute();
+                    return (new GenerateUploadToken($this->storage,true, $maxUploadSize, $hash))->execute();
+
                 case preg_match('/^\/request_upload.*$/', $path) === 1:
                     $this->failWhenNotAuthenticated($user, $path);
                     $maxUploadSize =  $user->getMaxUploadSize();
                     if($maxUploadSize === 0){
                         $maxUploadSize = $this->factory->getConfig()->getMaxFileSize();
                     }
-                    return (new GenerateUploadToken($this->storage, $this->request, $this->factory, false,
+                    return (new GenerateUploadToken($this->storage,false,
                         $maxUploadSize, $user->getEmail(), $user->getQuota()))->execute();
+
                 case preg_match('/^\/delete_upload\/(\w{9,}).*$/', $path, $matches) === 1:
                     $token = $matches[1] ?? null;
                     return (new DeleteUpload($this->storage, $token))->execute();

@@ -147,7 +147,7 @@ class ReadOneTimeLink extends AbstractObservable implements QueryInterface
             }
             $payload = $this->storage->readAttachment($attachment->hash);
             $fileName = $this->factory->getConfig()->getTempDir() . '/';
-            $fileName .= substr($attachment->hash, 0, 10) . '/';
+            $fileName .= substr($attachment->hash, 0, 2) . '/';
             $fileName .= $attachment->hash;
             $attachmentName = $attachment->name;
             $owner = $payload->getMetaData()->getUser();
