@@ -148,6 +148,21 @@ return [
     ###################################################################
 
     ###################################################################
+    # Upload Settings
+
+    # Chunk size in MB. Should match settings in UI
+    'chunk-size' => 15,
+
+    # Max file size in MB
+    'max-file-size' => 102400,
+
+    # Default quota for users in MB
+    'default-quota' => 512000,
+
+    # END: Upload Settings
+    ###################################################################
+
+    ###################################################################
     # Logging
 
     # application log file

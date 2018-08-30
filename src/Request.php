@@ -278,7 +278,6 @@ class Request
             isset($this->server['REDIRECT_HTTP_AUTHORIZATION'])
             && !empty($this->server['REDIRECT_HTTP_AUTHORIZATION'])
         ) {
-
             $_ = base64_decode(substr($this->server['REDIRECT_HTTP_AUTHORIZATION'], 6));
             $_ = explode(':', $_);
 

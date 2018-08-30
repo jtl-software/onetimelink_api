@@ -8,7 +8,6 @@
 
 namespace JTL\Onetimelink\Controller\Command;
 
-
 use JTL\Onetimelink\Controller\AbstractObservable;
 use JTL\Onetimelink\Controller\CommandInterface;
 use JTL\Onetimelink\Factory;
@@ -95,7 +94,6 @@ class PasswordResetRequest extends AbstractObservable implements CommandInterfac
         $userList = $this->storage->read();
         foreach ($userList['user'] as $email => $user) {
             if ($email === $requestUser->getEmail()) {
-
                 $created = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
                 $userList['user'][$email]['reset_hash'] = $hash;
                 $userList['user'][$email]['reset_hash_created'] = $created;
@@ -104,7 +102,6 @@ class PasswordResetRequest extends AbstractObservable implements CommandInterfac
         }
 
         if ($this->storage->write($userList)) {
-
             $message = $this->factory->getConfig()
                 ->createMessageForPasswordReset(
                     $requestUser->getEmail(),

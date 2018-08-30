@@ -8,7 +8,6 @@
 
 namespace JTL\Onetimelink\Controller\Command;
 
-
 use JTL\Onetimelink\Config;
 use JTL\Onetimelink\Controller\AbstractObservable;
 use JTL\Onetimelink\Controller\CommandInterface;
@@ -129,7 +128,7 @@ class CreateUser extends AbstractObservable implements CommandInterface
             'activation' => $activationHash
         ];
 
-        if($this->userStorage->write($userList) === true){
+        if ($this->userStorage->write($userList) === true) {
             $this->notify($this->config->createMessageNewUser($this->email, $activationHash));
             $this->logger->info("Account {$obfuscatedMail} created; activation email send with hash:{$activationHash}");
             return Response::createSuccessfulCreated($this->view);

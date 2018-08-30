@@ -13,7 +13,6 @@ namespace JTL\Onetimelink;
  */
 class HeaderSend
 {
-
     public function send(string $key, string $value)
     {
         header($key . ": " . $value);

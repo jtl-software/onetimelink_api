@@ -11,7 +11,8 @@
 
     "require-dev": {
         "codeception/codeception": "^2.3",
-        "phpunit/phpunit": "^6.0"
+        "phpunit/phpunit": "^6.0",
+        "friendsofphp/php-cs-fixer": "^2.13"
     },
 
     "autoload": {
@@ -24,5 +25,14 @@
         "platform": {
             "php": "7.1"
         }
+    },
+
+    "scripts": {
+        "phpcs": [
+            "./php-cs-fixer fix --config=./.php_cs.dist"
+        ],
+        "phpcs-dry": [
+            "./php-cs-fixer fix --config=./.php_cs.dist -v --dry-run"
+        ]
     }
 }

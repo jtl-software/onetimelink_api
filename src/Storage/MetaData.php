@@ -8,16 +8,15 @@
 
 namespace JTL\Onetimelink\Storage;
 
-
 use JTL\Onetimelink\User;
 
 class MetaData
 {
-
     const IDX_FILE_TYPE = 'filetype';
     const IDX_CREATED_BY_MAIL = 'user_email';
     const IDX_CREATED = 'created';
     const IDX_ORIGINAL_FILE_NAME = 'name';
+    const IDX_FILE_SIZE = 'chunk_size';
 
     /**
      * @var string
@@ -40,6 +39,11 @@ class MetaData
     private $filename;
 
     /**
+     * @var int
+     */
+    private $size;
+
+    /**
      * @param array $metaData
      *
      * @return MetaData
@@ -47,7 +51,6 @@ class MetaData
      */
     public static function createFromExistingMetaData(array $metaData): MetaData
     {
-
         if (!isset($metaData[self::IDX_FILE_TYPE])) {
             throw new \RuntimeException("Missing field " . self::IDX_FILE_TYPE);
         }
@@ -64,32 +67,36 @@ class MetaData
 
         $filename = $metaData[self::IDX_ORIGINAL_FILE_NAME] ?? null;
 
+        $fileSize = $metaData[self::IDX_FILE_SIZE] ?? null;
+
         return new MetaData(
             $metaData[self::IDX_FILE_TYPE],
             $user,
             $filename,
+            $fileSize,
             new \DateTimeImmutable($metaData[self::IDX_CREATED])
         );
     }
 
     /**
      * MetaData constructor.
-     *
      * @param string $fileType
      * @param User $user
-     * @param string $filename
-     * @param \DateTimeImmutable $created
+     * @param string|null $filename
+     * @param \DateTimeImmutable|null $created
+     * @param int|null $size
      * @throws \Exception
      */
     public function __construct(
         string $fileType,
         User $user,
         string $filename = null,
+        int $size = null,
         \DateTimeImmutable $created = null
     ) {
         $this->fileType = $fileType;
         $this->user = $user;
-
+        $this->size = $size;
         $this->filename = $filename;
         if ($this->filename === null) {
             $this->filename = uniqid('file') . '.txt';
@@ -131,6 +138,14 @@ class MetaData
     public function getFilename(): string
     {
         return $this->filename;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSize(): int
+    {
+        return $this->size;
     }
 
     /**

@@ -50,8 +50,7 @@ class HTMLMessage extends AbstractMessage
      */
     private function generateMessage()
     {
-
-        if(!is_file($this->templateFile)){
+        if (!is_file($this->templateFile)) {
             throw new \RuntimeException("$this->templateFile not exists");
         }
 

@@ -14,12 +14,15 @@ use JTL\Onetimelink\Controller\Command\CreateGuestLink;
 use JTL\Onetimelink\Controller\Command\CreateLink;
 use JTL\Onetimelink\Controller\Command\CreateUser;
 use JTL\Onetimelink\Controller\Command\DeleteLink;
+use JTL\Onetimelink\Controller\Command\DeleteUpload;
+use JTL\Onetimelink\Controller\Command\GenerateUploadToken;
 use JTL\Onetimelink\Controller\Command\Login;
 use JTL\Onetimelink\Controller\Command\PasswordResetAction;
 use JTL\Onetimelink\Controller\Command\PasswordResetRequest;
 use JTL\Onetimelink\Controller\Command\PrepareLink;
 use JTL\Onetimelink\Controller\Command\UpdateGuestLink;
 use JTL\Onetimelink\Controller\Command\UpdateUser;
+use JTL\Onetimelink\Controller\Command\UploadFile;
 use JTL\Onetimelink\DAO\LinkDAO;
 use JTL\Onetimelink\Exception\AuthenticationException;
 use JTL\Onetimelink\Exception\InvalidRouteException;
@@ -28,7 +31,6 @@ use JTL\Onetimelink\Request;
 use JTL\Onetimelink\Response;
 use JTL\Onetimelink\Storage\DatabaseStorage;
 use JTL\Onetimelink\User;
-use JTL\Onetimelink\View\JsonView;
 
 class Command implements ControllerInterface
 {
@@ -166,13 +168,18 @@ class Command implements ControllerInterface
                         $this->factory
                     ))->execute();
 
-                case preg_match('/^\/create\/(\w{9,}).*$/', $path, $matches) === 1:
+                case preg_match('/^\/create\/([0-9a-f]{24})$/', $path, $matches) === 1:
                     $hash = $matches[1] ?? null;
                     $guestLinkDAO = LinkDAO::getLinkFromHash($hash);
+
+                    if ($guestLinkDAO === null) {
+                        throw new \InvalidArgumentException('Guestlink does not exist');
+                    }
+
                     $tags = $guestLinkDAO->getTags();
                     $isProtected = $guestLinkDAO->isProtectedLink();
 
-                    if($guestLinkDAO->getDeleted() !== null) {
+                    if ($guestLinkDAO->getDeleted() !== null) {
                         throw new \InvalidArgumentException('Guestlink has already been used');
                     }
 
@@ -197,6 +204,53 @@ class Command implements ControllerInterface
                         $requestData['auth']
                     ))->execute();
 
+                case preg_match('/^\/upload\/([0-9a-f]{24})$/', $path, $matches) === 1:
+                    $hash = $matches[1] ?? null;
+                    $guestLinkDAO = LinkDAO::getLinkFromHash($hash);
+                    if ($guestLinkDAO === null) {
+                        throw new \InvalidArgumentException('Guestlink does not exist');
+                    }
+
+                    if ($guestLinkDAO->getDeleted() !== null) {
+                        throw new \InvalidArgumentException('Guestlink has already been used');
+                    }
+
+                    return (new UploadFile($this->storage, $user, $this->request, $this->factory))
+                        ->execute();
+
+                case preg_match('/^\/upload.*$/', $path) === 1:
+                    return (new UploadFile($this->storage, $user, $this->request, $this->factory))
+                        ->execute();
+
+                case preg_match('/^\/request_upload\/([0-9a-f]{24})$/', $path, $matches) === 1:
+                    $hash = $matches[1] ?? null;
+                    $guestLinkDAO = LinkDAO::getLinkFromHash($hash);
+                    if ($guestLinkDAO === null) {
+                        throw new \InvalidArgumentException('Guestlink does not exist');
+                    }
+
+                    $maxUploadSize = $this->factory->getConfig()->getMaxFileSize();
+                    return (new GenerateUploadToken($this->storage, true, $maxUploadSize, $hash))->execute();
+
+                case preg_match('/^\/request_upload.*$/', $path) === 1:
+                    $this->failWhenNotAuthenticated($user, $path);
+                    $maxUploadSize =  $user->getMaxUploadSize();
+                    if ($maxUploadSize === 0) {
+                        $maxUploadSize = $this->factory->getConfig()->getMaxFileSize();
+                    }
+
+                    return (new GenerateUploadToken(
+                        $this->storage,
+                        false,
+                        $maxUploadSize,
+                        $user->getEmail(),
+                        $user->getQuota()
+                    ))->execute();
+
+                case preg_match('/^\/delete_upload\/([0-9a-f]{24})$/', $path, $matches) === 1:
+                    $token = $matches[1] ?? null;
+                    return (new DeleteUpload($this->storage, $token))->execute();
+
             }
         }
 
@@ -216,7 +270,7 @@ class Command implements ControllerInterface
             throw new AuthenticationException("{$user} is not allowed to perform operation (POST: {$path})");
         }
 
-        if(false === $user->isActive()){
+        if (false === $user->isActive()) {
             $this->logger->info("{$user->obfuscatedUsername()} is inactive and not allowed to perform operation (POST: {$path}) - active: false");
             throw new AuthenticationException("{$user} is inactive");
         }

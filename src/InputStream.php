@@ -8,10 +8,8 @@
 
 namespace JTL\Onetimelink;
 
-
 class InputStream
 {
-
     public function readFromStream()
     {
         return file_get_contents("php://input");

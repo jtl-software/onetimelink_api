@@ -8,7 +8,6 @@
 
 namespace JTL\Onetimelink\Authentication;
 
-
 use JTL\Onetimelink\User;
 use JTL\Onetimelink\UserList;
 

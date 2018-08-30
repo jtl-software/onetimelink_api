@@ -8,7 +8,6 @@
 
 namespace JTL\Onetimelink\Controller\Command;
 
-
 use JTL\Onetimelink\Controller\CommandInterface;
 use JTL\Onetimelink\PasswordHash;
 use JTL\Onetimelink\Response;
@@ -102,7 +101,7 @@ class UpdateUser implements CommandInterface
         $newPasswordHash = PasswordHash::createHash($this->username, $this->newPassword);
         $userList['user'][$this->username]['password'] = $newPasswordHash;
 
-        if($this->userStorage->write($userList) === true){
+        if ($this->userStorage->write($userList) === true) {
             $this->logger->info("Password update for User {$obfuscatedUser} successful");
             return Response::createSuccessful($this->view);
         }

@@ -8,7 +8,6 @@
 
 namespace JTL\Onetimelink\Notification;
 
-
 use JTL\Onetimelink\Notification\Message\AbstractMessage;
 
 interface NotifierInterface

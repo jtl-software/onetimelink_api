@@ -8,7 +8,6 @@
 
 namespace JTL\Onetimelink\Controller;
 
-
 use JTL\Onetimelink\Response;
 
 interface ControllerInterface

@@ -10,7 +10,6 @@ namespace JTL\Onetimelink;
 
 class User
 {
-
     const USER_ANONYMOUS = 'anonym@jtl-software.com';
 
     /**
@@ -44,10 +43,20 @@ class User
     private $isActive = true;
 
     /**
+     * @var int
+     */
+    private $maxUploadSize;
+
+    /**
+     * @var int
+     */
+    private $quota;
+
+    /**
      * @param string $email
      * @return User
      */
-    public static function createUserFromString(string $email)
+    public static function createUserFromString(string $email): User
     {
         return new User($email);
     }
@@ -65,7 +74,7 @@ class User
     /**
      * @return User
      */
-    public static function createAnonymousUser()
+    public static function createAnonymousUser(): User
     {
         return new User(self::USER_ANONYMOUS, null, true);
     }
@@ -111,7 +120,7 @@ class User
     /**
      * @param string $email
      */
-    public function setEmail(string $email)
+    public function setEmail(string $email): void
     {
         $this->email = $email;
     }
@@ -119,7 +128,7 @@ class User
     /**
      * @return string|null
      */
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->email;
     }
@@ -135,9 +144,17 @@ class User
     /**
      * @param bool $isActive
      */
-    public function setIsActive(bool $isActive = true)
+    public function setIsActive(bool $isActive = true): void
     {
         $this->isActive = $isActive;
+    }
+
+    /**
+     * @param int $maxUploadSize
+     */
+    public function setMaxUploadSize(int $maxUploadSize): void
+    {
+        $this->maxUploadSize = $maxUploadSize;
     }
 
     /**
@@ -151,9 +168,33 @@ class User
     /**
      * @param bool $isAdmin
      */
-    public function setIsAdmin(bool $isAdmin = true)
+    public function setIsAdmin(bool $isAdmin = true): void
     {
         $this->isAdmin = $isAdmin;
+    }
+
+    /**
+     * @param int $quota
+     */
+    public function setQuota(int $quota): void
+    {
+        $this->quota = $quota;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxUploadSize(): int
+    {
+        return $this->maxUploadSize;
+    }
+
+    /**
+     * @return int
+     */
+    public function getQuota(): int
+    {
+        return $this->quota;
     }
 
     /**
@@ -169,17 +210,18 @@ class User
      */
     public function obfuscatedUsername() : string
     {
-        return "md5/" . md5($this->getEmail());
+        return 'md5/' . md5($this->getEmail());
     }
 
     /**
      * User constructor.
-     *
      * @param string $email
      * @param PasswordHash|null $passwordHash
      * @param bool $isAnonymous
+     * @param int $maxUploadSize
+     * @param int $quota
      */
-    private function __construct(string $email, PasswordHash $passwordHash = null, $isAnonymous = false)
+    private function __construct(string $email, PasswordHash $passwordHash = null, $isAnonymous = false, int $maxUploadSize = 0, int $quota = 0)
     {
         $this->email = $email;
         $this->isAnonymous = $isAnonymous;
@@ -187,5 +229,7 @@ class User
         if ($this->passwordHash === null) {
             $this->passwordHash = PasswordHash::createFromHash('');
         }
+        $this->maxUploadSize = $maxUploadSize;
+        $this->quota = $quota;
     }
 }

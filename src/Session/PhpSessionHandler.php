@@ -8,10 +8,8 @@
 
 namespace JTL\Onetimelink\Session;
 
-
 class PhpSessionHandler
 {
-
     public function setIdAndStartSession(string $sessionId)
     {
         session_id($sessionId);

@@ -10,7 +10,6 @@ namespace JTL\Onetimelink\Session;
 
 use JTL\Onetimelink\User;
 
-
 /**
  * Class Session
  * @package JTL\Onetimelink\Authentication

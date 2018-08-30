@@ -8,8 +8,6 @@
 
 namespace JTL\Onetimelink\Exception;
 
-
 class AttachmentNotFoundException extends \Exception
 {
-
 }

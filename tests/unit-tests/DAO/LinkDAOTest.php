@@ -120,7 +120,7 @@ class LinkDAOTest extends TestCase
         $linkDAO2 = new LinkDAO(
             'tester',
             '',
-            0,
+            '0',
             ['test', 'tag2'],
             '2018-01-01',
             []

@@ -55,6 +55,4 @@ class JsonView implements ViewInterface
     {
         return json_encode($this->data);
     }
-
-
 }

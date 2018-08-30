@@ -37,6 +37,17 @@ class LinkDAO
     /** @var bool */
     private $is_protected_link;
 
+    /**
+     * LinkDAO constructor.
+     * @param $user
+     * @param $hash
+     * @param $is_guest_link
+     * @param $tags
+     * @param $created
+     * @param $attachments
+     * @param null $deleted
+     * @param bool $is_protected_link
+     */
     public function __construct(
         $user,
         $hash,
@@ -46,8 +57,7 @@ class LinkDAO
         $attachments,
         $deleted = null,
         $is_protected_link = false
-    )
-    {
+    ) {
         $this->user = $user;
         $this->hash = $hash;
         $this->is_guest_link = $is_guest_link;
@@ -58,6 +68,9 @@ class LinkDAO
         $this->is_protected_link = $is_protected_link;
     }
 
+    /**
+     * @return bool
+     */
     public function save(): bool
     {
         $link = R::findOne('link', 'hash = ?', [$this->getHash()]);
@@ -81,6 +94,14 @@ class LinkDAO
         return R::store($link) !== false;
     }
 
+    public function delete(): void
+    {
+        R::trash($this->loadDBObject());
+    }
+
+    /**
+     * @return null|OODBBean
+     */
     public function loadDBObject(): ?OODBBean
     {
         $linkBean = R::findOne('link', 'hash = ?', [$this->getHash()]);
@@ -92,6 +113,10 @@ class LinkDAO
         return null;
     }
 
+    /**
+     * @param OODBBean $linkBean
+     * @return LinkDAO
+     */
     public static function constructFromDB(OODBBean $linkBean): LinkDAO
     {
         /*
@@ -113,6 +138,10 @@ class LinkDAO
         );
     }
 
+    /**
+     * @param string $hash
+     * @return LinkDAO|null
+     */
     public static function getLinkFromHash(string $hash): ?LinkDAO
     {
         $link = R::findOne('link', 'hash = ?', [$hash]);
@@ -165,7 +194,7 @@ class LinkDAO
     /**
      * @param array $tags
      */
-    public function setTags(array $tags)
+    public function setTags(array $tags): void
     {
         $this->tags = $tags;
     }
@@ -181,7 +210,7 @@ class LinkDAO
     /**
      * @param string $hash
      */
-    public function setHash(string $hash)
+    public function setHash(string $hash): void
     {
         $this->hash = $hash;
     }
@@ -197,7 +226,7 @@ class LinkDAO
     /**
      * @param bool $is_guest_link
      */
-    public function setIsGuestLink(bool $is_guest_link)
+    public function setIsGuestLink(bool $is_guest_link): void
     {
         $this->is_guest_link = $is_guest_link;
     }
@@ -213,7 +242,7 @@ class LinkDAO
     /**
      * @param string $created
      */
-    public function setCreated(string $created)
+    public function setCreated(string $created): void
     {
         $this->created = $created;
     }
@@ -229,7 +258,7 @@ class LinkDAO
     /**
      * @param array $attachments
      */
-    public function setAttachments(array $attachments)
+    public function setAttachments(array $attachments): void
     {
         $this->attachments = $attachments;
     }
@@ -254,7 +283,7 @@ class LinkDAO
     /**
      * @return null|string
      */
-    public function getDeleted()
+    public function getDeleted(): ?string
     {
         return $this->deleted;
     }
@@ -262,7 +291,7 @@ class LinkDAO
     /**
      * @param null|string $deleted
      */
-    public function setDeleted(string $deleted)
+    public function setDeleted(string $deleted): void
     {
         $this->deleted = $deleted;
     }

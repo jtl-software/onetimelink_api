@@ -8,8 +8,6 @@
 
 namespace JTL\Onetimelink\Exception;
 
-
 class AuthenticationException extends \Exception
 {
-
 }

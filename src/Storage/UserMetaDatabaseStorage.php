@@ -18,7 +18,6 @@ use RedBeanPHP\R;
  */
 class UserMetaDatabaseStorage
 {
-
     const DATETIME_FORMAT = 'Y-m-d H:i:s';
 
     /**

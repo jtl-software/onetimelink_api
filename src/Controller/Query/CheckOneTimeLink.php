@@ -17,7 +17,6 @@ use RedBeanPHP\OODBBean;
 
 class CheckOneTimeLink implements QueryInterface
 {
-
     private $hash;
 
     /**
@@ -113,13 +112,11 @@ class CheckOneTimeLink implements QueryInterface
                 $this->view->set('protected', $protected);
                 $this->view->set('tags', array_values(array_filter(explode(',', $link->tags), '\strlen')));
             }
-        }
-        catch(\Exception $e) {
+        } catch (\Exception $e) {
             error_log($e->getMessage());
             $this->view->set('alive', false);
         }
 
         return Response::createSuccessful($this->view);
     }
-
 }

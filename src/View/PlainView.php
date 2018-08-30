@@ -8,7 +8,6 @@
 
 namespace JTL\Onetimelink\View;
 
-
 class PlainView implements ViewInterface
 {
 
@@ -58,6 +57,4 @@ class PlainView implements ViewInterface
     {
         return (string)$this->data;
     }
-
-
 }

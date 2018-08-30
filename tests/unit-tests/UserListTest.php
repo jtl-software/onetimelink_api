@@ -63,8 +63,8 @@ class UserListTest extends TestCase
         $userList = new UserList($list, ['bar@foo.de']);
         $_ = $userList->getUsers();
         $this->assertEquals([
-            ['email' => 'foo@bar.de', 'isAdmin' => false, 'active' => false, 'created_at' => '2018-01-01'],
-            ['email' => 'bar@foo.de', 'isAdmin' => true, 'active' => true, 'created_at' => null],
+            ['email' => 'foo@bar.de', 'isAdmin' => false, 'active' => false, 'created_at' => '2018-01-01', 'maxUploadSize' => 0, 'quota' => 0],
+            ['email' => 'bar@foo.de', 'isAdmin' => true, 'active' => true, 'created_at' => null,'maxUploadSize' => 0, 'quota' => 0],
         ], $_);
     }
 }

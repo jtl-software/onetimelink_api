@@ -8,7 +8,6 @@
 
 namespace JTL\Onetimelink\Controller\Command;
 
-
 use JTL\Onetimelink\Config;
 use JTL\Onetimelink\Controller\AbstractObservable;
 use JTL\Onetimelink\Controller\CommandInterface;
@@ -84,7 +83,6 @@ class ActivateUser extends AbstractObservable implements CommandInterface
         $email = null;
 
         foreach ($userList['user'] as $name => $user) {
-
             if ($user['activation'] === $this->activationHash) {
                 $this->logger->info("Hash {$this->activationHash} found => activate user {$name}");
                 $userList['user'][$name]['active'] = true;
@@ -94,7 +92,7 @@ class ActivateUser extends AbstractObservable implements CommandInterface
             }
         }
 
-        if($email !== null && $this->userStorage->write($userList) === true){
+        if ($email !== null && $this->userStorage->write($userList) === true) {
             $this->notify($this->config->createMessageActivateUser($email));
             return Response::createSuccessful($this->view);
         }

@@ -8,7 +8,6 @@
 
 namespace JTL\Onetimelink;
 
-
 class PasswordHash
 {
 

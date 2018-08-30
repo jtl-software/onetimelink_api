@@ -8,7 +8,6 @@
 
 namespace JTL\Onetimelink\Controller\Command;
 
-
 use JTL\Onetimelink\Controller\CommandInterface;
 use JTL\Onetimelink\DAO\AttachmentDAO;
 use JTL\Onetimelink\Factory;
@@ -84,8 +83,8 @@ class CreateLink implements CommandInterface
         Request $request,
         Factory $factory,
         array $tags = [],
-        bool $isProtected = false)
-    {
+        bool $isProtected = false
+    ) {
         $this->storage = $storage;
         $this->request = $request;
         $this->view = $factory->createJsonView();
@@ -179,7 +178,6 @@ class CreateLink implements CommandInterface
         $this->logger->info("create {$data['amount']} OTL(s)", ["user" => (string)$this->user]);
         for ($i = 0; $i < $data['amount']; ++$i) {
             $linkHash = LinkHash::createUnique();
-
             if ($this->storage->writeLink($linkHash, $attachments, $this->user, $tags, $this->isProtected)) {
                 $this->link = new OneTimeLink($linkHash, $this->user);
                 $links[] = $this->link->toArray();
@@ -193,4 +191,3 @@ class CreateLink implements CommandInterface
         return Response::createSuccessfulCreated($this->view);
     }
 }
-

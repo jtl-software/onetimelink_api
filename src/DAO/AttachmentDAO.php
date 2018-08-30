@@ -34,6 +34,20 @@ class AttachmentDAO
     /** @var bool */
     private $isMerged;
 
+    /** @var integer */
+    private $size;
+
+    /**
+     * AttachmentDAO constructor.
+     * @param $email
+     * @param $created
+     * @param $deleted
+     * @param $fileType
+     * @param $fileName
+     * @param $hash
+     * @param $isMerged
+     * @param int $size
+     */
     public function __construct(
         $email,
         $created,
@@ -41,9 +55,9 @@ class AttachmentDAO
         $fileType,
         $fileName,
         $hash,
-        $isMerged
-    )
-    {
+        $isMerged,
+        $size = 0
+    ) {
         $this->userEmail = $email;
         $this->created = $created;
         $this->deleted = $deleted;
@@ -51,8 +65,12 @@ class AttachmentDAO
         $this->fileName = $fileName;
         $this->hash = $hash;
         $this->isMerged = $isMerged;
+        $this->size = $size;
     }
 
+    /**
+     * @return bool
+     */
     public function save(): bool
     {
         $attachment = R::findOne('attachment', 'hash = ?', [$this->getHash()]);
@@ -68,10 +86,19 @@ class AttachmentDAO
         $attachment->name = $this->getFileName();
         $attachment->hash = $this->getHash();
         $attachment->isMerged = $this->isMerged();
+        $attachment->size = $this->getSize();
 
         return R::store($attachment) !== false;
     }
 
+    public function delete(): void
+    {
+        R::trash($this->loadDBObject());
+    }
+
+    /**
+     * @return null|OODBBean
+     */
     public function loadDBObject(): ?OODBBean
     {
         $attachmentBean = R::findOne('attachment', 'hash = ?', [$this->getHash()]);
@@ -83,7 +110,11 @@ class AttachmentDAO
         return null;
     }
 
-    public static function getAttachmentFromHash(string $hash)
+    /**
+     * @param string $hash
+     * @return AttachmentDAO|null
+     */
+    public static function getAttachmentFromHash(string $hash): ?AttachmentDAO
     {
         $attachment = R::findOne('attachment', 'hash = ?', [$hash]);
 
@@ -95,7 +126,8 @@ class AttachmentDAO
                 $attachment->filetype,
                 $attachment->name,
                 $attachment->hash,
-                (bool)$attachment->isMerged
+                (bool)$attachment->isMerged,
+                $attachment->size
             );
         }
 
@@ -105,7 +137,7 @@ class AttachmentDAO
     /**
      * @return string|null
      */
-    public function getDeleted()
+    public function getDeleted(): ?string
     {
         return $this->deleted;
     }
@@ -113,7 +145,7 @@ class AttachmentDAO
     /**
      * @param string $deleted
      */
-    public function setDeleted(string $deleted)
+    public function setDeleted(string $deleted): void
     {
         $this->deleted = $deleted;
     }
@@ -129,7 +161,7 @@ class AttachmentDAO
     /**
      * @param string $userEmail
      */
-    public function setUserEmail(string $userEmail)
+    public function setUserEmail(string $userEmail): void
     {
         $this->userEmail = $userEmail;
     }
@@ -145,7 +177,7 @@ class AttachmentDAO
     /**
      * @param string $created
      */
-    public function setCreated(string $created)
+    public function setCreated(string $created): void
     {
         $this->created = $created;
     }
@@ -161,7 +193,7 @@ class AttachmentDAO
     /**
      * @param string $fileType
      */
-    public function setFileType(string $fileType)
+    public function setFileType(string $fileType): void
     {
         $this->fileType = $fileType;
     }
@@ -177,7 +209,7 @@ class AttachmentDAO
     /**
      * @param string $fileName
      */
-    public function setFileName(string $fileName)
+    public function setFileName(string $fileName): void
     {
         $this->fileName = $fileName;
     }
@@ -193,7 +225,7 @@ class AttachmentDAO
     /**
      * @param string $hash
      */
-    public function setHash(string $hash)
+    public function setHash(string $hash): void
     {
         $this->hash = $hash;
     }
@@ -206,12 +238,28 @@ class AttachmentDAO
         return $this->isMerged;
     }
 
-    /**AttachmentDAO.php
+    /**
      * @param bool $isMerged
      */
-    public function setIsMerged(bool $isMerged)
+    public function setIsMerged(bool $isMerged): void
     {
         $this->isMerged = $isMerged;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSize(): int
+    {
+        return $this->size;
+    }
+
+    /**
+     * @param int $size
+     */
+    public function setSize(int $size): void
+    {
+        $this->size = $size;
     }
 
     /**
@@ -227,7 +275,7 @@ class AttachmentDAO
             'name' => $this->getFileName(),
             'hash' => $this->getHash(),
             'merged' => $this->isMerged(),
+            'size' => $this->getSize(),
         ];
     }
-
 }
