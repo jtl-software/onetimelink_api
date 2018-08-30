@@ -167,7 +167,7 @@ class Command implements ControllerInterface
                         $this->factory
                     ))->execute();
 
-                case preg_match('/^\/create\/(\w{9,}).*$/', $path, $matches) === 1:
+                case preg_match('/^\/create\/([0-9a-f]{24})$/', $path, $matches) === 1:
                     $hash = $matches[1] ?? null;
                     $guestLinkDAO = LinkDAO::getLinkFromHash($hash);
                     $tags = $guestLinkDAO->getTags();
@@ -175,6 +175,7 @@ class Command implements ControllerInterface
                     if ($guestLinkDAO->getDeleted() !== null) {
                         throw new \InvalidArgumentException('Guestlink has already been used');
                     }
+
                     $createLink = new CreateLink($this->storage, $user, $this->request, $this->factory, $tags, $isProtected);
                     $guestLink = new UpdateGuestLink($createLink, $this->storage, $hash, $this->factory);
                     return $guestLink->execute();
@@ -187,15 +188,18 @@ class Command implements ControllerInterface
                     $this->failWhenNotAuthenticated($user, $path);
                     return (new CreateLink($this->storage, $user, $this->request, $this->factory))
                         ->execute();
-                case preg_match('/^\/upload\/(\w{9,}).*$/', $path, $matches) === 1:
+
+                case preg_match('/^\/upload\/([0-9a-f]{24})$/', $path, $matches) === 1:
                     $hash = $matches[1] ?? null;
                     $guestLinkDAO = LinkDAO::getLinkFromHash($hash);
                     if ($guestLinkDAO === null) {
                         throw new \InvalidArgumentException('Guestlink does not exist');
                     }
+
                     if ($guestLinkDAO->getDeleted() !== null) {
                         throw new \InvalidArgumentException('Guestlink has already been used');
                     }
+
                     return (new UploadFile($this->storage, $user, $this->request, $this->factory))
                         ->execute();
 
@@ -203,12 +207,13 @@ class Command implements ControllerInterface
                     return (new UploadFile($this->storage, $user, $this->request, $this->factory))
                         ->execute();
 
-                case preg_match('/^\/request_upload\/(\w{9,}).*$/', $path, $matches) === 1:
+                case preg_match('/^\/request_upload\/([0-9a-f]{24})$/', $path, $matches) === 1:
                     $hash = $matches[1] ?? null;
                     $guestLinkDAO = LinkDAO::getLinkFromHash($hash);
                     if ($guestLinkDAO === null) {
                         throw new \InvalidArgumentException('Guestlink does not exist');
                     }
+
                     $maxUploadSize = $this->factory->getConfig()->getMaxFileSize();
                     return (new GenerateUploadToken($this->storage, true, $maxUploadSize, $hash))->execute();
 
@@ -218,6 +223,7 @@ class Command implements ControllerInterface
                     if ($maxUploadSize === 0) {
                         $maxUploadSize = $this->factory->getConfig()->getMaxFileSize();
                     }
+
                     return (new GenerateUploadToken(
                         $this->storage,
                         false,
@@ -226,7 +232,7 @@ class Command implements ControllerInterface
                         $user->getQuota()
                     ))->execute();
 
-                case preg_match('/^\/delete_upload\/(\w{9,}).*$/', $path, $matches) === 1:
+                case preg_match('/^\/delete_upload\/([0-9a-f]{24})$/', $path, $matches) === 1:
                     $token = $matches[1] ?? null;
                     return (new DeleteUpload($this->storage, $token))->execute();
 

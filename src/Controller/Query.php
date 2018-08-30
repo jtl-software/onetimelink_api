@@ -82,7 +82,7 @@ class Query implements ControllerInterface
         $uri = $this->request->getUri();
 
         switch ($uri) {
-            case preg_match('/^\/read\/(\w{9,})(\?view_text=1)?.*$/', $uri, $matches) === 1:
+            case preg_match('/^\/read\/([0-9a-f]{24})(\?view_text=1)?.*$/', $uri, $matches) === 1:
                 $hash = $matches[1] ?? null;
                 $view = (bool)($matches[2] ?? null);
                 $query = new ReadOneTimeLink(
@@ -95,7 +95,7 @@ class Query implements ControllerInterface
                 );
                 return $query->run();
 
-            case preg_match('/^\/check\/(\w{9,})$/', $uri, $matches) === 1:
+            case preg_match('/^\/check\/([0-9a-f]{24})$/', $uri, $matches) === 1:
                 $hash = $matches[1] ?? null;
                 $query = new CheckOneTimeLink($this->storage, $hash, new JsonView(), $this->factory->createLogger());
                 return $query->run();
@@ -105,10 +105,9 @@ class Query implements ControllerInterface
                 $query = new CheckPasswordResetHash($this->factory, $hash, new JsonView());
                 return $query->run();
 
-            case preg_match('/^\/upload_limits\/(\w{9,}).*$/', $uri, $matches) === 1:
+            case preg_match('/^\/upload_limits\/([0-9a-f]{24})$/', $uri, $matches) === 1:
                 $hash = $matches[1] ?? null;
                 $guestLinkDAO = LinkDAO::getLinkFromHash($hash);
-
                 if ($guestLinkDAO === null) {
                     throw new \InvalidArgumentException('Guestlink does not exist');
                 }
@@ -118,7 +117,6 @@ class Query implements ControllerInterface
             case preg_match('/^\/upload_limits.*$/', $uri) === 1:
                 $this->failWhenNotAuthenticated($user, $uri);
                 $quota = $user->getQuota();
-
                 if ($quota === 0) {
                     $quota = $this->factory->getConfig()->getDefaultUserQuota();
                 }
