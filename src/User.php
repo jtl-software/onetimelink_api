@@ -56,7 +56,7 @@ class User
      * @param string $email
      * @return User
      */
-    public static function createUserFromString(string $email)
+    public static function createUserFromString(string $email): User
     {
         return new User($email);
     }
@@ -74,7 +74,7 @@ class User
     /**
      * @return User
      */
-    public static function createAnonymousUser()
+    public static function createAnonymousUser(): User
     {
         return new User(self::USER_ANONYMOUS, null, true);
     }
@@ -120,7 +120,7 @@ class User
     /**
      * @param string $email
      */
-    public function setEmail(string $email)
+    public function setEmail(string $email): void
     {
         $this->email = $email;
     }
@@ -128,7 +128,7 @@ class User
     /**
      * @return string|null
      */
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->email;
     }
@@ -144,7 +144,7 @@ class User
     /**
      * @param bool $isActive
      */
-    public function setIsActive(bool $isActive = true)
+    public function setIsActive(bool $isActive = true): void
     {
         $this->isActive = $isActive;
     }
@@ -152,7 +152,7 @@ class User
     /**
      * @param int $maxUploadSize
      */
-    public function setMaxUploadSize(int $maxUploadSize)
+    public function setMaxUploadSize(int $maxUploadSize): void
     {
         $this->maxUploadSize = $maxUploadSize;
     }
@@ -168,7 +168,7 @@ class User
     /**
      * @param bool $isAdmin
      */
-    public function setIsAdmin(bool $isAdmin = true)
+    public function setIsAdmin(bool $isAdmin = true): void
     {
         $this->isAdmin = $isAdmin;
     }
@@ -176,7 +176,7 @@ class User
     /**
      * @param int $quota
      */
-    public function setQuota(int $quota)
+    public function setQuota(int $quota): void
     {
         $this->quota = $quota;
     }
@@ -184,12 +184,15 @@ class User
     /**
      * @return int
      */
-    public function getMaxUploadSize()
+    public function getMaxUploadSize(): int
     {
         return $this->maxUploadSize;
     }
 
-    public function getQuota()
+    /**
+     * @return int
+     */
+    public function getQuota(): int
     {
         return $this->quota;
     }
@@ -207,7 +210,7 @@ class User
      */
     public function obfuscatedUsername() : string
     {
-        return "md5/" . md5($this->getEmail());
+        return 'md5/' . md5($this->getEmail());
     }
 
     /**

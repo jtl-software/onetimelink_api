@@ -75,6 +75,7 @@ class Query implements ControllerInterface
      * @return Response
      * @throws AuthenticationException
      * @throws InvalidRouteException
+     * @throws \Exception
      */
     public function run(): Response
     {

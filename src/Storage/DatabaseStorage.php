@@ -203,7 +203,11 @@ class DatabaseStorage
         return new Payload('', MetaData::createFromExistingMetaData($attachment->toArray()));
     }
 
-    public function deleteAttachment(string $hash)
+    /**
+     * @param string $hash
+     * @throws DataNotFoundException
+     */
+    public function deleteAttachment(string $hash): void
     {
         unlink($this->getAttachmentLocation($hash));
     }

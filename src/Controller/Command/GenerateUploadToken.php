@@ -10,9 +10,7 @@ namespace JTL\Onetimelink\Controller\Command;
 use JTL\Onetimelink\Controller\CommandInterface;
 use JTL\Onetimelink\DAO\AttachmentDAO;
 use JTL\Onetimelink\DAO\UploadDAO;
-use JTL\Onetimelink\Factory;
 use JTL\Onetimelink\LinkHash;
-use JTL\Onetimelink\Request;
 use JTL\Onetimelink\Response;
 use JTL\Onetimelink\Storage\DatabaseStorage;
 use JTL\Onetimelink\UserQuota;
@@ -63,7 +61,7 @@ class GenerateUploadToken implements CommandInterface
         DatabaseStorage $storage,
         bool $isGuest,
         int $maxUploadSize = 0,
-                                string $identifier = null,
+        string $identifier = null,
         int $quota = 0
     ) {
         $this->maxUploadSize = $maxUploadSize;
@@ -82,8 +80,7 @@ class GenerateUploadToken implements CommandInterface
     {
         $token = LinkHash::createUnique();
 
-        if (($upload = UploadDAO::getUploadFromIdentifier($this->identifier)) !== null
-            && $this->isGuest === true) {
+        if ($this->isGuest === true && ($upload = UploadDAO::getUploadFromIdentifier($this->identifier)) !== null) {
             $token = $upload->getToken();
             $this->removeExistingUpload($token);
         }
@@ -112,9 +109,9 @@ class GenerateUploadToken implements CommandInterface
     /**
      * @param string $token
      */
-    private function removeExistingUpload(string $token):void
+    private function removeExistingUpload(string $token): void
     {
-        if ($attachment = AttachmentDAO::getAttachmentFromHash(LinkHash::create($token))) {
+        if (($attachment = AttachmentDAO::getAttachmentFromHash(LinkHash::create($token))) !== null) {
             $this->storage->deleteAttachment($attachment->getHash());
             $attachment->delete();
         }

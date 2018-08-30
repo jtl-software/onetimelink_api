@@ -55,8 +55,13 @@ class GetUploadLimits implements QueryInterface
      * @param int $quota
      * @param string|null $identifier
      */
-    public function __construct(Factory $factory, int $maxUploadSize = 0, bool $isGuest = true, int $quota = 0, string $identifier = null)
-    {
+    public function __construct(
+        Factory $factory,
+        int $maxUploadSize = 0,
+        bool $isGuest = true,
+        int $quota = 0,
+        string $identifier = null
+    ) {
         $this->view = new JsonView();
         $this->config = $factory->getConfig();
         $this->maxUploadSize = $maxUploadSize;
@@ -68,14 +73,17 @@ class GetUploadLimits implements QueryInterface
     public function run(): Response
     {
         $maxFileSize = $this->maxUploadSize;
+
         if ($maxFileSize === 0 || $maxFileSize > $this->config->getMaxFileSize()) {
             $maxFileSize = $this->config->getMaxFileSize();
         }
+
         if ($this->isGuest === false && $this->quota !== 0) {
             $usedQuota = UserQuota::getUsedQuotaForUser($this->identifier);
             $this->view->set('usedQuota', $usedQuota);
             $this->view->set('quota', $this->quota);
         }
+
         $this->view->set('maxFileSize', $maxFileSize);
         $this->view->set('chunkSize', $this->config->getChunkSize());
         return Response::createSuccessful($this->view);

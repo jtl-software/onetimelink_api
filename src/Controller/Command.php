@@ -30,7 +30,6 @@ use JTL\Onetimelink\Request;
 use JTL\Onetimelink\Response;
 use JTL\Onetimelink\Storage\DatabaseStorage;
 use JTL\Onetimelink\User;
-use JTL\Onetimelink\View\JsonView;
 
 class Command implements ControllerInterface
 {
@@ -170,8 +169,14 @@ class Command implements ControllerInterface
                 case preg_match('/^\/create\/([0-9a-f]{24})$/', $path, $matches) === 1:
                     $hash = $matches[1] ?? null;
                     $guestLinkDAO = LinkDAO::getLinkFromHash($hash);
+
+                    if ($guestLinkDAO === null) {
+                        throw new \InvalidArgumentException('Guestlink does not exist');
+                    }
+
                     $tags = $guestLinkDAO->getTags();
                     $isProtected = $guestLinkDAO->isProtectedLink();
+
                     if ($guestLinkDAO->getDeleted() !== null) {
                         throw new \InvalidArgumentException('Guestlink has already been used');
                     }

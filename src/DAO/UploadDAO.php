@@ -71,7 +71,7 @@ class UploadDAO
     /**
      * @return bool
      */
-    public function save() : bool
+    public function save(): bool
     {
         $upload = R::findOne('upload', 'token = ?', [$this->token]);
 
@@ -88,7 +88,7 @@ class UploadDAO
         return R::store($upload);
     }
 
-    public function delete() : void
+    public function delete(): void
     {
         R::trash($this->loadDBObject());
     }
@@ -96,7 +96,7 @@ class UploadDAO
     /**
      * @param string $token
      */
-    public function setToken(string $token)
+    public function setToken(string $token): void
     {
         $this->token = $token;
     }
@@ -104,7 +104,7 @@ class UploadDAO
     /**
      * @return string
      */
-    public function getToken() : string
+    public function getToken(): string
     {
         return $this->token;
     }
@@ -112,7 +112,7 @@ class UploadDAO
     /**
      * @param int $receivedBytes
      */
-    public function setReceivedBytes(int $receivedBytes)
+    public function setReceivedBytes(int $receivedBytes): void
     {
         $this->receivedBytes = $receivedBytes;
     }
@@ -120,7 +120,7 @@ class UploadDAO
     /**
      * @return int
      */
-    public function getReceivedBytes() : int
+    public function getReceivedBytes(): int
     {
         return $this->receivedBytes;
     }
@@ -128,7 +128,7 @@ class UploadDAO
     /**
      * @param int $maxUploadSize
      */
-    public function setMaxUploadSize(int $maxUploadSize)
+    public function setMaxUploadSize(int $maxUploadSize): void
     {
         $this->maxUploadSize = $maxUploadSize;
     }
@@ -136,7 +136,7 @@ class UploadDAO
     /**
      * @return int
      */
-    public function getMaxUploadSize() : int
+    public function getMaxUploadSize(): int
     {
         return $this->maxUploadSize;
     }
@@ -144,7 +144,7 @@ class UploadDAO
     /**
      * @param bool $done
      */
-    public function setDone(bool $done)
+    public function setDone(bool $done): void
     {
         $this->done = $done;
     }
@@ -152,7 +152,7 @@ class UploadDAO
     /**
      * @return bool
      */
-    public function isDone() : bool
+    public function isDone(): bool
     {
         return $this->done;
     }
@@ -160,7 +160,7 @@ class UploadDAO
     /**
      * @param string $identifier
      */
-    public function setIdentifier(string $identifier)
+    public function setIdentifier(string $identifier): void
     {
         $this->identifier = $identifier;
     }
@@ -168,7 +168,7 @@ class UploadDAO
     /**
      * @return string
      */
-    public function getIdentifier() : string
+    public function getIdentifier(): string
     {
         return $this->identifier;
     }
@@ -176,7 +176,7 @@ class UploadDAO
     /**
      * @param string $created
      */
-    public function setCreated(string $created)
+    public function setCreated(string $created): void
     {
         $this->created = $created;
     }
@@ -184,11 +184,14 @@ class UploadDAO
     /**
      * @return string
      */
-    public function getCreated()
+    public function getCreated(): string
     {
         return $this->created;
     }
 
+    /**
+     * @return null|OODBBean
+     */
     public function loadDBObject(): ?OODBBean
     {
         $uploadBean = R::findOne('upload', 'token = ?', [$this->getToken()]);
