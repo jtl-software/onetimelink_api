@@ -121,7 +121,7 @@ class ReadOneTimeLink extends AbstractObservable implements QueryInterface
                     $linkDAO->setDeleted($now);
                     $linkDAO->save();
 
-                    if (!$this->user->equals($linkUser) && !$this->user->isAnonymous()) {
+                    if (!$this->user->equals($linkUser)) {
                         $this->notify(
                             $this->factory->getConfig()->createMessageForLinkDeleted(
                                 $linkUser,
@@ -167,7 +167,7 @@ class ReadOneTimeLink extends AbstractObservable implements QueryInterface
         $view = new PlainView('application/octet-stream');
         $header = new Header();
 
-        if (!$owner->equals($this->user) && !$this->user->isAnonymous()) {
+        if (!$owner->equals($this->user)) {
             $this->notify(
                 $this->factory->getConfig()->createMessageForLinkDeleted(
                     $owner,
