@@ -18,18 +18,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Class GarbageCollectCommand
  *
- * Deletes all zip files that are older than 24 hours.
  * Deletes every link from history that is older than 30 days
  * Deletes every attachment that is older than 7 days or is associated with
  *   a link that has been deleted already
  * Deletes attachments that are not referenced in the database
+ * Deletes upload tokens older than 7 days
  *
  * @package JTL\Onetimelink\CLI\Command
  */
 class GarbageCollectCommand extends Command
 {
     /** @var int */
-    private $zipExpirationHours = 24;
+    private $uploadTokenExpirationDays = 7;
 
     /** @var int */
     private $linkExpirationDays = 7;
@@ -59,10 +59,10 @@ class GarbageCollectCommand extends Command
         $this->setName('gc:run')
             ->setDescription('Runs the garbage collector.')
             ->addOption(
-                'zip_expiration',
-                'z',
+                'upload_expiration',
+                'u',
                 InputOption::VALUE_REQUIRED,
-                'After how many hours should temporary zip files be deleted (default: 24)'
+                'After how many days should upload tokens be invalidated (default: 7)'
             )
             ->addOption(
                 'link_expiration',
@@ -86,12 +86,12 @@ class GarbageCollectCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $zipExpirationHours = $input->getOption('zip_expiration');
+        $uploadExpirationHours = $input->getOption('upload_expiration');
         $linkExpirationDays = $input->getOption('link_expiration');
         $dataExpirationDays = $input->getOption('data_expiration');
 
-        if ($zipExpirationHours !== null) {
-            $this->zipExpirationHours = $zipExpirationHours;
+        if ($uploadExpirationHours !== null) {
+            $this->uploadTokenExpirationDays = $uploadExpirationHours;
         }
 
         if ($linkExpirationDays !== null) {
@@ -105,10 +105,6 @@ class GarbageCollectCommand extends Command
         $now = new \DateTimeImmutable();
         $now = $now->format('c');
         $output->writeln("#### {$now} - Running Garbage Collection");
-
-        $output->writeln("Delete temp Download Files: zip_expiration time is {$this->zipExpirationHours} hours");
-        $this->deleteTempDownloadFiles($this->downloadsPath, $output);
-        $output->writeln("");
 
         $output->writeln("Delete Data Files: link_expiration time is {$this->linkExpirationDays} days");
         $this->deleteOldLinks($output);
@@ -129,7 +125,7 @@ class GarbageCollectCommand extends Command
     {
         $oldTime = new \DateTimeImmutable("{$this->linkExpirationDays} days ago");
         $oldLinks = R::findAll('link', 'created < ?', [
-            $oldTime->format('Y-m-d H:i:s')
+            $oldTime->format('Y-m-d H:i:s'),
         ]);
 
         if (\count($oldLinks) > 0) {
@@ -150,32 +146,21 @@ class GarbageCollectCommand extends Command
      * @param OutputInterface $output
      * @throws \Exception
      */
-    private function deleteTempDownloadFiles(string $path, OutputInterface $output)
-    {
-        foreach (glob($path . '/*.zip') as $zipFile) {
-            $stat = stat($zipFile);
-            $mtime = (new \DateTimeImmutable())->setTimestamp($stat['mtime']);
-            $diff = (new \DateTime())->diff($mtime);
-            $hoursDiff = $diff->h;
-            $hoursDiff += $diff->days * 24;
-
-            if ($hoursDiff > $this->zipExpirationHours) {
-                if (file_exists($zipFile)) {
-                    $output->writeln("[{$hoursDiff} > {$this->zipExpirationHours}] deleting temporary ZIP file {$zipFile}");
-                    unlink($zipFile);
-                }
-            }
-        }
-    }
-
-    /**
-     * @param string $path
-     * @param OutputInterface $output
-     * @throws \Exception
-     */
     private function deleteDataFiles(string $path, OutputInterface $output)
     {
         $attachments = R::findAll('attachment');
+        $uploads = R::findAll('upload');
+
+        /** @var OODBBean $upload */
+        foreach ($uploads as $upload) {
+            $createdAt = new \DateTimeImmutable($upload->created);
+            $diff = (new \DateTime())->diff($createdAt);
+
+            if ($diff->days > $this->uploadTokenExpirationDays) {
+                $output->writeln('Deleting upload token ' . $upload->token);
+                R::trash($upload);
+            }
+        }
 
         /** @var OODBBean $attachment */
         foreach ($attachments as $attachment) {
