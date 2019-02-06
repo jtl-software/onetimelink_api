@@ -52,10 +52,10 @@ class DatabaseStorage
          */
         for ($i = 1; $i <= $numDataFiles; ++$i) {
             $filename = $chunkDir . $hash . $i;
-            $chunkContents = file_get_contents($filename);
-            file_put_contents($this->getDataFileLocation($hash), $chunkContents, FILE_APPEND);
-
             if (file_exists($filename)) {
+                $chunkContents = file_get_contents($filename);
+                file_put_contents($this->getDataFileLocation($hash), $chunkContents, FILE_APPEND);
+
                 unlink($filename);
             }
         }
