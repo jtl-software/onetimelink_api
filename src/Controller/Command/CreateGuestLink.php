@@ -88,6 +88,10 @@ class CreateGuestLink implements CommandInterface
         $amount = (int)$data['amount'];
         $isProtected = $data['protected'] ?? false;
 
+        if (\is_string($tags)) {
+            $tags = explode(',', $tags);
+        }
+
         $this->logger->info("create {$amount} GuestLink(s)", ["user" => (string)$this->user]);
         for ($i = 0; $i < $amount; ++$i) {
             $hash = LinkHash::createUnique();
