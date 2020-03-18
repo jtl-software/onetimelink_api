@@ -11,6 +11,7 @@ use JTL\Onetimelink\Exception\AuthenticationException;
 use JTL\Onetimelink\Exception\DataNotFoundException;
 use JTL\Onetimelink\Exception\InvalidRouteException;
 use JTL\Onetimelink\Factory;
+use JTL\Onetimelink\Monolog\RequestId;
 use RedBeanPHP\R;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -56,6 +57,9 @@ try {
     http_response_code(500);
 
     $factory->createLogger()->error("Exception: " . $e->getMessage());
+
+    $errorResponseData = ['request_id' => RequestId::getInstance()->getId()];
+    echo json_encode($errorResponseData);
 }
 
 function enableCors()

@@ -12,6 +12,7 @@ use JTL\Onetimelink\Controller\Command;
 use JTL\Onetimelink\Controller\ControllerInterface;
 use JTL\Onetimelink\Controller\Query;
 use JTL\Onetimelink\Monolog\IdentifyProcessor;
+use JTL\Onetimelink\Monolog\RequestIdProcessor;
 use JTL\Onetimelink\Storage\UserMetaDatabaseStorage;
 use JTL\Onetimelink\Storage\UserStorage;
 use JTL\Onetimelink\View\JsonView;
@@ -136,6 +137,7 @@ class Factory
             $this->logger->pushProcessor(new UidProcessor());
             $this->logger->pushProcessor(new MemoryUsageProcessor());
             $this->logger->pushProcessor(new IdentifyProcessor());
+            $this->logger->pushProcessor(new RequestIdProcessor());
         } catch (\Exception $e) {
             $this->logger->pushHandler(new NullHandler());
         }
