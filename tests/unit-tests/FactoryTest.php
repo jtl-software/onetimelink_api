@@ -10,6 +10,7 @@ namespace JTL\Onetimelink;
 
 use JTL\Onetimelink\Controller\Command;
 use JTL\Onetimelink\Controller\Query;
+use Monolog\Processor\UidProcessor;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -23,13 +24,13 @@ class FactoryTest extends TestCase
 
     public function testCanCreateQueryController()
     {
-        $factory = new Factory($this->buildConfigMock(true));
+        $factory = new Factory($this->buildConfigMock(true), $this->createMock(UidProcessor::class));
         $this->assertInstanceOf(Query::class, $factory->createController());
     }
 
     public function testCanCreateCommandController()
     {
-        $factory = new Factory($this->buildConfigMock(false));
+        $factory = new Factory($this->buildConfigMock(false), $this->createMock(UidProcessor::class));
         $this->assertInstanceOf(Command::class, $factory->createController());
     }
 

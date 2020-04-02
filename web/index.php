@@ -11,6 +11,7 @@ use JTL\Onetimelink\Exception\AuthenticationException;
 use JTL\Onetimelink\Exception\DataNotFoundException;
 use JTL\Onetimelink\Exception\InvalidRouteException;
 use JTL\Onetimelink\Factory;
+use Monolog\Processor\UidProcessor;
 use RedBeanPHP\R;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -18,10 +19,12 @@ require_once __DIR__ . '/../vendor/autoload.php';
 enableCors();
 
 try {
+    $uidProcessor = new UidProcessor();
     $factory = new Factory(
         Config::createFromFilePath(
             Config::getConfigPathFromEnvironment()
-        )
+        ),
+        $uidProcessor
     );
     $config = $factory->getConfig();
 
@@ -51,11 +54,14 @@ try {
     http_response_code(403);
 
 } catch (Exception $e) {
-    header('X-Error: Unknown'.$e->getMessage());
-    error_log($e->getMessage());
+    header('X-Error: Unknown' . $e->getMessage());
+    error_log($e->getMessage() . "RequestId: {$uidProcessor->getUid()}");
     http_response_code(500);
 
     $factory->createLogger()->error("Exception: " . $e->getMessage());
+
+    $errorResponseData = ['request_id' => $uidProcessor->getUid()];
+    echo json_encode($errorResponseData);
 }
 
 function enableCors()

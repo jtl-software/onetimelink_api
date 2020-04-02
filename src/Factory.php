@@ -40,14 +40,21 @@ class Factory
      */
     private $logger;
 
+    /**
+     * @var UidProcessor
+     */
+    private $uidProcessor;
+
 
     /**
      * Factory constructor.
      * @param Config $config
+     * @param UidProcessor $uidProcessor
      */
-    public function __construct(Config $config)
+    public function __construct(Config $config, UidProcessor $uidProcessor)
     {
         $this->config = $config;
+        $this->uidProcessor = $uidProcessor;
     }
 
     /**
@@ -133,7 +140,7 @@ class Factory
             $streamHandler->setFormatter(new LineFormatter($this->getConfig()->getLogFormat(), "Y-m-dTH:i:s:u"));
 
             $this->logger->pushHandler($streamHandler);
-            $this->logger->pushProcessor(new UidProcessor());
+            $this->logger->pushProcessor($this->uidProcessor);
             $this->logger->pushProcessor(new MemoryUsageProcessor());
             $this->logger->pushProcessor(new IdentifyProcessor());
         } catch (\Exception $e) {
