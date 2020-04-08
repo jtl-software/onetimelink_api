@@ -51,7 +51,11 @@ class DatabaseStorage
          *      The index of the chunk in the current upload. First chunk is 1 (no base-0 counting here).
          */
         for ($i = 1; $i <= $numDataFiles; ++$i) {
-            $filename = $chunkDir . $hash . $i;
+            $filename = $chunkDir . $this->getChunkFilename($hash, $i);
+            // Fallback for running uploads during deployment
+            if (!file_exists($filename)) {
+                $filename = $chunkDir . $hash . $i;
+            }
             if (file_exists($filename)) {
                 $chunkContents = file_get_contents($filename);
                 file_put_contents($this->getDataFileLocation($hash), $chunkContents, FILE_APPEND);
@@ -106,7 +110,8 @@ class DatabaseStorage
      */
     public function writeChunk(string $hash, int $chunk, Payload $data): bool
     {
-        $dataResult = file_put_contents($this->getDataFileLocation($hash . $chunk), $data->getData());
+        $dataResult = file_put_contents($this->getDataFileLocation($this->getChunkFilename($hash, $chunk)),
+            $data->getData());
         $attachmentResult = $this->createAttachment($hash, $data);
 
         return $dataResult && $attachmentResult;
@@ -364,5 +369,10 @@ class DatabaseStorage
     private function getDataFileLocation(string $hash): string
     {
         return $this->getDirectory($hash) . $hash;
+    }
+
+    private function getChunkFilename(string $hash, int $chunk): string
+    {
+        return "{$hash}_{$chunk}";
     }
 }

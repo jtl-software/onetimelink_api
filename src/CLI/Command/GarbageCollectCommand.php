@@ -176,8 +176,10 @@ class GarbageCollectCommand extends Command
                 }
             }
 
-            // All links associated with the attachment were deleted so it's safe to delete the attachment as well
-            if (\count($links) === $deletedLinks) {
+            $ctime = new \DateTimeImmutable($attachment->created);
+            $diff = (new \DateTime())->diff($ctime);
+
+            if ($diff->days > $this->dataExpirationDays) {
                 if ($attachment->name === '-#-TEXTINPUT-#-') {
                     R::trash($attachment);
                 } else {
@@ -185,27 +187,11 @@ class GarbageCollectCommand extends Command
                         $output->writeln('Deleting temporary data file ' . $dataFile);
                         unlink($dataFile);
                         R::trash($attachment);
-                    }
-                }
-            } else {
-                // Otherwise delete data files older than 7 days
-                $ctime = new \DateTimeImmutable($attachment->created);
-                $diff = (new \DateTime())->diff($ctime);
 
-                if ($diff->days > $this->dataExpirationDays) {
-                    if ($attachment->name === '-#-TEXTINPUT-#-') {
-                        R::trash($attachment);
-                    } else {
-                        if (file_exists($dataFile)) {
-                            $output->writeln('Deleting temporary data file ' . $dataFile);
-                            unlink($dataFile);
-                            R::trash($attachment);
-
-                            foreach ($links as $link) {
-                                $link->deleted = (new \DateTimeImmutable())->format('Y-m-d  H:i:s');
-                                R::store($link);
-                                $output->writeln('Marking link ' . $link->hash . ' as deleted.');
-                            }
+                        foreach ($links as $link) {
+                            $link->deleted = (new \DateTimeImmutable())->format('Y-m-d  H:i:s');
+                            R::store($link);
+                            $output->writeln('Marking link ' . $link->hash . ' as deleted.');
                         }
                     }
                 }
@@ -214,7 +200,7 @@ class GarbageCollectCommand extends Command
 
         // Delete files that aren't referenced in the database
         foreach (glob($path . '/??/*') as $file) {
-            $hash = basename($file);
+            $hash = explode('_', basename($file))[0];
 
             $attachment = R::findOne('attachment', 'hash = ?', [$hash]);
 
