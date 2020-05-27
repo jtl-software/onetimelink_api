@@ -5,7 +5,7 @@
         "php": ">=7.1",
         "monolog/monolog": "~1.23",
         "symfony/console": "^3.4",
-        "phpmailer/phpmailer": "~v6.0.0",
+        "phpmailer/phpmailer": "~v6.1.6",
         "gabordemooij/redbean": "^5.1"
     },
 
