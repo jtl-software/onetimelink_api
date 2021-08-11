@@ -37,16 +37,18 @@ class UploadDAOTest extends \PHPUnit\Framework\TestCase
         $token = uniqid('token', true);
         $receivedBytes = random_int(100,1000000);
         $maxUploadSize = random_int(100,1000000);
+        $receivedChunks = random_int(100,1000000);
         $done = true;
         $identifier = uniqid('identifier', true);
         $created = uniqid('created', true);
-        $uploadDAO = new UploadDAO($token, $receivedBytes, $maxUploadSize, $done, $identifier, $created);
+        $uploadDAO = new UploadDAO($token, $receivedChunks, $receivedBytes, $maxUploadSize, $done, $identifier, $created);
 
         $this->assertTrue($uploadDAO->save());
 
         $upload = UploadDAO::getUploadFromToken($token);
 
         $this->assertEquals($token, $upload->getToken());
+        $this->assertEquals($receivedChunks, $upload->getReceivedChunks());
         $this->assertEquals($receivedBytes, $upload->getReceivedBytes());
         $this->assertEquals($maxUploadSize, $upload->getMaxUploadSize());
         $this->assertEquals($done, $upload->isDone());
@@ -58,12 +60,14 @@ class UploadDAOTest extends \PHPUnit\Framework\TestCase
         $token = uniqid('token', true);
         $receivedBytes = random_int(100,1000000);
         $maxUploadSize = random_int(100,1000000);
+        $receivedChunks = random_int(100,1000000);
         $done = true;
         $identifier = uniqid('identifier', true);
         $created = uniqid('created', true);
         $uploadDAO = new UploadDAO($token);
 
         $uploadDAO->setToken($token);
+        $uploadDAO->setReceivedChunks($receivedChunks);
         $uploadDAO->setReceivedBytes($receivedBytes);
         $uploadDAO->setMaxUploadSize($maxUploadSize);
         $uploadDAO->setDone($done);
@@ -76,6 +80,7 @@ class UploadDAOTest extends \PHPUnit\Framework\TestCase
         $upload = UploadDAO::getUploadFromIdentifier($identifier);
 
         $this->assertEquals($token, $upload->getToken());
+        $this->assertEquals($receivedChunks, $upload->getReceivedChunks());
         $this->assertEquals($receivedBytes, $upload->getReceivedBytes());
         $this->assertEquals($maxUploadSize, $upload->getMaxUploadSize());
         $this->assertEquals($done, $upload->isDone());
@@ -101,16 +106,18 @@ class UploadDAOTest extends \PHPUnit\Framework\TestCase
         $token = uniqid('token', true);
         $receivedBytes = random_int(100,1000000);
         $maxUploadSize = random_int(100,1000000);
+        $receivedChunks = random_int(100,1000000);
         $done = true;
         $identifier = uniqid('identifier', true);
         $created = uniqid('created', true);
-        $uploadDAO = new UploadDAO($token, $receivedBytes, $maxUploadSize, $done, $identifier, $created);
+        $uploadDAO = new UploadDAO($token, $receivedChunks, $receivedBytes, $maxUploadSize, $done, $identifier, $created);
 
         $this->assertTrue($uploadDAO->save());
 
         $upload = $uploadDAO->loadDBObject();
 
         $this->assertEquals($token, $upload->token);
+        $this->assertEquals($receivedChunks, $upload->receivedChunks);
         $this->assertEquals($receivedBytes, $upload->receivedBytes);
         $this->assertEquals($maxUploadSize, $upload->maxUploadSize);
         $this->assertEquals($done, $upload->done);

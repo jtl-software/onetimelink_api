@@ -21,6 +21,11 @@ class UploadDAO
     /**
      * @var int
      */
+    private $receivedChunks;
+
+    /**
+     * @var int
+     */
     private $receivedBytes;
 
     /**
@@ -46,6 +51,7 @@ class UploadDAO
     /**
      * UploadDAO constructor.
      * @param $token
+     * @param int $receivedChunks
      * @param int $receivedBytes
      * @param int $maxUploadSize
      * @param bool $done
@@ -54,6 +60,7 @@ class UploadDAO
      */
     public function __construct(
         $token,
+        $receivedChunks,
         $receivedBytes = 0,
         $maxUploadSize = 0,
         bool $done = false,
@@ -61,6 +68,7 @@ class UploadDAO
         string $created = null
     ) {
         $this->token = $token;
+        $this->receivedChunks = $receivedChunks;
         $this->receivedBytes = $receivedBytes;
         $this->maxUploadSize = $maxUploadSize;
         $this->done = $done;
@@ -80,6 +88,7 @@ class UploadDAO
         }
 
         $upload->token = $this->getToken();
+        $upload->receivedChunks = $this->getReceivedChunks();
         $upload->receivedBytes = $this->getReceivedBytes();
         $upload->maxUploadSize = $this->getMaxUploadSize();
         $upload->identifier = $this->getIdentifier();
@@ -91,6 +100,16 @@ class UploadDAO
     public function delete(): void
     {
         R::trash($this->loadDBObject());
+    }
+
+    public function getReceivedChunks(): int
+    {
+        return $this->receivedChunks;
+    }
+
+    public function setReceivedChunks(int $receivedChunks): void
+    {
+        $this->receivedChunks = $receivedChunks;
     }
 
     /**
@@ -214,6 +233,7 @@ class UploadDAO
         if ($upload instanceof OODBBean) {
             return new self(
                 $upload->token,
+                $upload->receivedChunks,
                 $upload->receivedBytes,
                 $upload->maxUploadSize,
                 $upload->done,
@@ -236,6 +256,7 @@ class UploadDAO
         if ($upload instanceof OODBBean) {
             return new self(
                 $upload->token,
+                $upload->receivedChunks,
                 $upload->receivedBytes,
                 $upload->maxUploadSize,
                 $upload->done,

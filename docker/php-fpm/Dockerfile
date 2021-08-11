@@ -42,4 +42,5 @@ RUN go get github.com/mailhog/mhsendmail
 RUN cp /root/go/bin/mhsendmail /usr/bin/mhsendmail
 RUN echo 'sendmail_path = /usr/bin/mhsendmail --smtp-addr mailhog:1025' >> /usr/local/etc/php/php.ini \
     && echo 'upload_max_filesize = 100M' >> /usr/local/etc/php/php.ini \
+    && echo 'max_execution_time = 1200' >> /usr/local/etc/php/php.ini \
     && echo 'post_max_size = 100M' >> /usr/local/etc/php/php.ini

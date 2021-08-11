@@ -122,9 +122,11 @@ class UploadFile implements CommandInterface
 
         if ($chunkNumber <= $totalChunks && $this->storage->writeChunk($hash, $chunkNumber, $payload)) {
             $uploadDAO->setReceivedBytes($receivedBytes);
+            $uploadDAO->setReceivedChunks($uploadDAO->getReceivedChunks() + 1);
             $uploadDAO->save();
             $this->logger->debug("Process upload chunk {$chunkNumber}/{$totalChunks}", ['user' => (string)$this->user]);
-            if ($chunkNumber === $totalChunks) {
+            $this->logger->info("UPLOAD PROGRESS++++:    {$uploadDAO->getReceivedChunks()} - {$totalChunks}");
+            if ($uploadDAO->getReceivedChunks() >= $totalChunks) {
                 $this->logger->info("File upload is done - {$totalChunks} chunks uploaded - Hash {$hash}", ['user' => (string)$this->user]);
                 $this->storage->mergeChunks($hash);
                 $this->logger->info("File upload is done - {$totalChunks} chunks uploaded - Hash {$hash}", ['user' => (string)$this->user]);
