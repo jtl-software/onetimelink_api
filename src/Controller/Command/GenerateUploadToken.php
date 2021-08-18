@@ -95,6 +95,7 @@ class GenerateUploadToken implements CommandInterface
         $uploadDAO = new UploadDAO(
             $token,
             0,
+            0,
             $this->maxUploadSize,
             false,
             $this->identifier,
