@@ -19,7 +19,6 @@ use JTL\Onetimelink\Controller\Command\GenerateUploadToken;
 use JTL\Onetimelink\Controller\Command\Login;
 use JTL\Onetimelink\Controller\Command\PasswordResetAction;
 use JTL\Onetimelink\Controller\Command\PasswordResetRequest;
-use JTL\Onetimelink\Controller\Command\PrepareLink;
 use JTL\Onetimelink\Controller\Command\UpdateGuestLink;
 use JTL\Onetimelink\Controller\Command\UpdateUser;
 use JTL\Onetimelink\Controller\Command\UploadFile;
@@ -186,10 +185,6 @@ class Command implements ControllerInterface
                     $createLink = new CreateLink($this->storage, $user, $this->request, $this->factory, $tags, $isProtected);
                     $guestLink = new UpdateGuestLink($createLink, $this->storage, $hash, $this->factory);
                     return $guestLink->execute();
-
-                case preg_match('/^\/prepare_create.*$/', $path) === 1:
-                    return (new PrepareLink($this->storage, $user, $this->request, $this->factory))
-                        ->execute();
 
                 case preg_match('/^\/create.*$/', $path) === 1:
                     $this->failWhenNotAuthenticated($user, $path);
