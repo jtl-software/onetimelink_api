@@ -1,16 +1,16 @@
 {
-    "name": "JTLSoftwareGmbH/onetimelink_api",
+    "name": "jtl-software/onetimelink_api",
     "type": "project",
     "require": {
         "php": ">=7.1",
         "monolog/monolog": "~1.23",
         "symfony/console": "^3.4",
-        "phpmailer/phpmailer": "~v6.0.0",
+        "phpmailer/phpmailer": "~v6.5",
         "gabordemooij/redbean": "^5.1"
     },
 
     "require-dev": {
-        "codeception/codeception": "^2.3",
+        "codeception/codeception": "^4.1",
         "phpunit/phpunit": "^6.0",
         "friendsofphp/php-cs-fixer": "^2.13"
     },
