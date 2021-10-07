@@ -19,3 +19,6 @@ paths:
 settings:
     shuffle: false
     lint: true
+
+params:
+    - .env

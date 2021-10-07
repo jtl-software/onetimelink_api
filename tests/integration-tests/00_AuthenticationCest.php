@@ -21,7 +21,7 @@ class AuthenticationCest
     {
         $I->wantTo('Successfully log in before creating a Guest Link');
 
-        $I->amHttpAuthenticated('otl-tester@jtl-software.com', 'this-is-a-passw0rd');
+        $I->amHttpAuthenticated(getenv('OTL_USERNAME'), getenv('OTL_PASSWORD'));
         $I->sendPOST('/login');
         $I->seeResponseCodeIs(200);
 

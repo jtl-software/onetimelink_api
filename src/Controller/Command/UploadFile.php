@@ -150,10 +150,21 @@ class UploadFile implements CommandInterface
         $contentType = $this->request->readGet('type');
         $filename = $this->request->readPost('resumableFilename');
         $data = $this->request->readPost(self::PLAIN_DATA_FIELD);
+        $size = 0;
         if ($data === null && isset($_FILES['file']['tmp_name'], $_FILES['file']['type'])) {
             $data = file_get_contents($_FILES['file']['tmp_name']);
             $contentType = $_FILES['file']['type'];
             $size = $_FILES['file']['size'];
+        } elseif ($data !== null) {
+            if (is_string($data)) {
+                $size = strlen($data);
+            } elseif (is_resource($data)) {
+                $fstat = fstat($data);
+
+                if (is_array($fstat)) {
+                    $size = $fstat['size'] ?? 1;
+                }
+            }
         }
 
         if (empty($data)) {

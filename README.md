@@ -9,6 +9,8 @@ After the recipient has received the data it will be irrevocably deleted.
 
 Requirements: nginx, >= PHP 7.1
 
+Copy `.env.dist` to `.env` and enter valid user credentials.
+
 Setup Document Root to `./web` directory and point all requests to `index.php`
 
     location / {
@@ -32,7 +34,7 @@ Setup X-ACCL-REDIRECT for controlled Downloads - create a internal location poin
         alias /application/data/;
     }
     
-User `docker-compose.yml` for more information
+See `docker-compose.yml` for more information
 
 # How-To Contribute
 

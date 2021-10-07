@@ -5,3 +5,4 @@
 /tests/integration-tests/_output/*
 !/tests/integration-tests/_output/.gitkeep
 .php_cs.cache
+.env

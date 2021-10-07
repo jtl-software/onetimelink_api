@@ -23,7 +23,7 @@ class GuestLinkCest extends \JTL\Onetimelink\AuthenticationCest
     {
         $I->wantTo('Create a Guest Link as user Tester with');
 
-        $I->amHttpAuthenticated('otl-tester@jtl-software.com', 'this-is-a-passw0rd');
+        $I->amHttpAuthenticated(getenv('OTL_USERNAME'), getenv('OTL_PASSWORD'));
         $I->sendPOST('/login');
         $I->seeResponseCodeIs(200);
 
@@ -48,12 +48,20 @@ class GuestLinkCest extends \JTL\Onetimelink\AuthenticationCest
     {
         $I->wantTo('Create a One Time Link as Guest Link Response');
         $this->resumableID = uniqid('1024-codeceptionjpg', true);
+        $formerHash = explode('/', $this->formerCreatedLink)[1];
 
-        $I->amHttpAuthenticated('otl-tester@jtl-software.com', 'this-is-a-passw0rd');
+        $I->amHttpAuthenticated(getenv('OTL_USERNAME'), getenv('OTL_PASSWORD'));
         $I->sendPOST('/login');
         $I->seeResponseCodeIs(200);
 
-        $I->sendPOST('/prepare_create?' . http_build_query($this->getAuthParams()), [
+        $I->sendPost('/request_upload/' . $formerHash);
+        $I->seeResponseCodeIs(200);
+
+        $response = $I->grabResponse();
+        $data = json_decode($response, true);
+        $uploadToken = $data['uploadToken'];
+
+        $I->sendPOST('/upload?' . http_build_query($this->getAuthParams()), [
             'resumableChunkNumber' => 1,
             'resumableChunkSize' => 4096,
             'resumableCurrentChunkSize' => 1024,
@@ -64,12 +72,13 @@ class GuestLinkCest extends \JTL\Onetimelink\AuthenticationCest
             'resumableTotalSize' => 1024,
             'resumableType' => 'image/jpg',
             'data' => 'test codeception image',
+            'uploadToken' => $uploadToken,
         ]);
 
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->formerCreatedLink, json_encode([
             'text' => $this->getTextContent(),
-            'file0' => $this->resumableID,
+            'file0' => $uploadToken,
             'amount' => 1,
         ]));
 

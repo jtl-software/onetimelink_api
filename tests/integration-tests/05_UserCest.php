@@ -28,7 +28,7 @@ class UserCest extends AuthenticationCest
         $mailHost = getenv('I9N_EMAIL_HOST') ?: 'example.com';
         $this->createdUserEmail = uniqid('email', true) . '@' . $mailHost;
 
-        $I->amHttpAuthenticated('otl-tester@jtl-software.com', 'this-is-a-passw0rd');
+        $I->amHttpAuthenticated(getenv('OTL_USERNAME'), getenv('OTL_PASSWORD'));
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST('/user/add', json_encode([
                 'email' => $this->createdUserEmail,
@@ -49,7 +49,7 @@ class UserCest extends AuthenticationCest
         $password = uniqid('newpassword', true);
         $this->notCreatedUserEmail = uniqid('email', true) . '@not-allowed.de';
 
-        $I->amHttpAuthenticated('tester', 'this-is-a-passw0rd');
+        $I->amHttpAuthenticated('tester', 'test');
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST('/user/add', json_encode([
                 'username' => $username,
