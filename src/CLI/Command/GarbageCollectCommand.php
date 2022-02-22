@@ -150,16 +150,25 @@ class GarbageCollectCommand extends Command
     {
         $attachments = R::findAll('attachment');
         $uploads = R::findAll('upload');
+        $uploadTokenList = [];
 
         /** @var OODBBean $upload */
         foreach ($uploads as $upload) {
             $createdAt = new \DateTimeImmutable($upload->created);
             $diff = (new \DateTime())->diff($createdAt);
 
-            if ($diff->days > $this->uploadTokenExpirationDays) {
+            if ($upload->done && $diff->days > $this->uploadTokenExpirationDays) {
                 $output->writeln('Deleting upload token ' . $upload->token);
+                $uploadTokenList[] = $upload->token;
                 R::trash($upload);
             }
+        }
+
+        $chunks = R::find('chunk', 'token IN (' . R::genSlots($uploadTokenList) . ')', $uploadTokenList);
+
+        foreach ($chunks as $chunk) {
+            $output->writeln('Deleting chunk with token ' . $chunk->token);
+            R::trash($chunk);
         }
 
         /** @var OODBBean $attachment */
