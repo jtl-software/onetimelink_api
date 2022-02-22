@@ -157,7 +157,7 @@ class GarbageCollectCommand extends Command
             $createdAt = new \DateTimeImmutable($upload->created);
             $diff = (new \DateTime())->diff($createdAt);
 
-            if ($upload->done && $diff->days > $this->uploadTokenExpirationDays) {
+            if ($diff->days > $this->uploadTokenExpirationDays) {
                 $output->writeln('Deleting upload token ' . $upload->token);
                 $uploadTokenList[] = $upload->token;
                 R::trash($upload);
