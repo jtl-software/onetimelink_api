@@ -101,10 +101,6 @@ class UploadFile implements CommandInterface
 
         $hash = LinkHash::create($uploadToken);
 
-        if ($payload->getMetaData()->getSize() > $chunkSize) {
-            throw new \RuntimeException('Failed to store Data. Chunk too big');
-        }
-
         if ($this->storage->isMergeDone($hash)) {
             $this->logger->debug("{$hash} is already merged");
             return Response::createSuccessfulCreated($this->view);
