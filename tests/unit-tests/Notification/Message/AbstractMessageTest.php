@@ -25,7 +25,8 @@ class AbstractMessageTest extends TestCase
     protected $testSubject = 'subject';
     protected $testMessage = 'message';
 
-    public function setUp(){
+    public function setUp(): void
+    {
         $this->message = new MyMessage($this->testRecipient, $this->testSubject);
         $this->message->setMessage($this->testMessage);
     }

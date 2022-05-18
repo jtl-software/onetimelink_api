@@ -34,7 +34,7 @@ use RedBeanPHP\R;
 class CreateLinkTest extends TestCase
 {
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $dsn = 'sqlite:' . __DIR__ . '/../../../../var/db/test.db';
         if (!R::hasDatabase('test')) {
@@ -45,7 +45,7 @@ class CreateLinkTest extends TestCase
 
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         R::nuke();
         R::close();

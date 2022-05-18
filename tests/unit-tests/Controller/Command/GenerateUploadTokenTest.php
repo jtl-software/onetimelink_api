@@ -27,7 +27,7 @@ use RedBeanPHP\R;
  */
 class GenerateUploadTokenTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $dsn = 'sqlite:' . __DIR__ . '/../../../../var/db/test.db';
         if (!R::hasDatabase('test')) {
@@ -37,7 +37,7 @@ class GenerateUploadTokenTest extends TestCase
         R::selectDatabase('test');
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         R::nuke();
         R::close();

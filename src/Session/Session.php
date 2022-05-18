@@ -106,7 +106,7 @@ class Session
      */
     public function getAuthenticatedUser(string $token = null)
     {
-        $_ = unserialize($this->get("at{$token}"));
+        $_ = unserialize($this->get("at{$token}") ?? '');
         if ($_ instanceof User) {
             return $_;
         }

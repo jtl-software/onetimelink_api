@@ -84,7 +84,7 @@ class GarbageCollectCommand extends Command
      * @throws \RuntimeException
      * @throws \Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $uploadExpirationHours = $input->getOption('upload_expiration');
         $linkExpirationDays = $input->getOption('link_expiration');
@@ -115,6 +115,8 @@ class GarbageCollectCommand extends Command
         $output->writeln("");
 
         $output->writeln("#### Process finished");
+
+        return Command::SUCCESS;
     }
 
     /**

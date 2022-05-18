@@ -60,7 +60,7 @@ class DatabaseStorageTest extends TestCase
         }
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $dsn = 'sqlite:' . __DIR__ . '/../../../var/db/test.db';
         if (!R::hasDatabase('test')) {
@@ -78,7 +78,7 @@ class DatabaseStorageTest extends TestCase
         $this->storage = new DatabaseStorage(new LocationDirectory($this->directory));
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         R::nuke();
         R::close();

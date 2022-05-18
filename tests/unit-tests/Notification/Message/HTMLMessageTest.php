@@ -26,7 +26,7 @@ class HTMLMessageTest extends TestCase
             'foo@bar', 'test', __DIR__ . '/testMessageTemplate.php', $data
         );
 
-        $this->assertContains($data->needle, $htmlMessage->getMessage());
+        $this->assertStringContainsString($data->needle, $htmlMessage->getMessage());
     }
 
     public function testFailWhenTemplateNotExists()

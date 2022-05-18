@@ -33,13 +33,13 @@ class LocationDirectoryTest extends TestCase
     public function testCanConvertedToString()
     {
         $directory = LocationDirectory::createFromExistingPath(__DIR__);
-        $this->assertContains('tests/Storage', (string)$directory);
+        $this->assertStringContainsString('tests/Storage', (string)$directory);
     }
 
     public function testPathHasAlwaysASlashAtTheEnd()
     {
         $directory = new LocationDirectory('path/without/slash/at/the/end');
-        $this->assertContains(
+        $this->assertStringContainsString(
             'path/without/slash/at/the/end/',
             (string)$directory
         );
