@@ -255,7 +255,7 @@ class Config
      */
     public function createMessageForLinkDeleted(
         User $user,
-        array $tags = [],
+        array $tags,
         string $ip,
         string $useragent
     ): AbstractMessage {

@@ -30,7 +30,7 @@ class AuthenticationCest
 
         $I->assertTrue(isset($data['authtoken']));
         $I->assertTrue(isset($data['session']));
-        $I->assertEquals('otl-tester@jtl-software.com', $data['authuser']);
+        $I->assertEquals(getenv('OTL_USERNAME'), $data['authuser']);
 
         $this->authToken = $data['authtoken'];
         $this->authSession = $data['session'];

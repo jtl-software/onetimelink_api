@@ -32,7 +32,7 @@ class ConfigTest extends TestCase
     public function testCanReadDefaultConfig()
     {
         putenv("ENVIRONMENT_CONFIG_PATH=");
-        $this->assertContains('config/config.dist.php', Config::getConfigPathFromEnvironment());
+        $this->assertStringContainsString('config/config.dist.php', Config::getConfigPathFromEnvironment());
     }
 
     public function testCanCreateFileFromPath()

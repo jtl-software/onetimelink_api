@@ -38,7 +38,7 @@ class DeleteResetHashesCommand extends Command
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $deleteAfterHours = $input->getOption('time') ?? 24;
         $deleteAfterDays = (int)$deleteAfterHours / 24;
@@ -61,5 +61,7 @@ class DeleteResetHashesCommand extends Command
         }
 
         file_put_contents($this->userListPath, json_encode($userList, JSON_PRETTY_PRINT));
+
+        return Command::SUCCESS;
     }
 }

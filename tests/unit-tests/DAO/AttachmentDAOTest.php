@@ -17,7 +17,7 @@ use RedBeanPHP\R;
  */
 class AttachmentDAOTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $dsn = 'sqlite:' . __DIR__ . '/../../../var/db/test.db';
         if (!R::hasDatabase('test')) {
@@ -27,7 +27,7 @@ class AttachmentDAOTest extends TestCase
         R::selectDatabase('test');
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         R::nuke();
         R::close();

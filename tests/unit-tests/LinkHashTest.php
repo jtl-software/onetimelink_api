@@ -19,7 +19,7 @@ class LinkHashTest extends TestCase
     public function testCanCreateSHA512Hash(): void
     {
         $_ = LinkHash::create('test');
-        $this->assertInternalType('string', $_);
+        $this->assertIsString($_);
         $this->assertEquals(24, \strlen($_));
     }
 
