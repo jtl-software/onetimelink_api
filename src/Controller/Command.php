@@ -92,6 +92,9 @@ class Command implements ControllerInterface
 
         if ($this->request->isPost()) {
             $requestData = $this->request->readInputAsJson();
+            if (isset($requestData['email'])) {
+                $requestData['email'] = strtolower(trim($requestData['email']));
+            }
 
             switch ($path) {
                 case '/user/add':

@@ -106,7 +106,7 @@ class Login implements CommandInterface
 
         /** old behaviour must be removed soon */
         if (!filter_var($user->getEmail(), FILTER_VALIDATE_EMAIL)) {
-            $username = (string)$this->request->readServer('PHP_AUTH_USER');
+            $username = strtolower(trim((string)$this->request->readServer('PHP_AUTH_USER')));
             $password = (string)$this->request->readServer('PHP_AUTH_PW');
             $userList = $this->storage->read();
 

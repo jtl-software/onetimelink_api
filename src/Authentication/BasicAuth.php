@@ -52,7 +52,7 @@ class BasicAuth implements AuthenticationInterface
             return $_;
         }
 
-        $authUser = trim((string)$this->request->readServer('PHP_AUTH_USER'));
+        $authUser = strtolower(trim((string)$this->request->readServer('PHP_AUTH_USER')));
         $authPassword = (string)$this->request->readServer('PHP_AUTH_PW');
 
         $user = $userList->getUser($authUser);
