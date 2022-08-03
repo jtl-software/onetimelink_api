@@ -223,7 +223,7 @@ class User
      */
     private function __construct(string $email, PasswordHash $passwordHash = null, $isAnonymous = false, int $maxUploadSize = 0, int $quota = 0)
     {
-        $this->email = $email;
+        $this->email = strtolower($email);
         $this->isAnonymous = $isAnonymous;
         $this->passwordHash = $passwordHash;
         if ($this->passwordHash === null) {
