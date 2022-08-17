@@ -122,14 +122,18 @@ class ReadOneTimeLink extends AbstractObservable implements QueryInterface
                     $linkDAO->save();
 
                     if (!$this->user->equals($linkUser)) {
-                        $this->notify(
-                            $this->factory->getConfig()->createMessageForLinkDeleted(
-                                $linkUser,
-                                $linkDAO->getTags(),
-                                $this->request->getBlurredClientIp(),
-                                $this->request->getUserAgent()
-                            )
-                        );
+                        try {
+                            $this->notify(
+                                $this->factory->getConfig()->createMessageForLinkDeleted(
+                                    $linkUser,
+                                    $linkDAO->getTags(),
+                                    $this->request->getBlurredClientIp(),
+                                    $this->request->getUserAgent()
+                                )
+                            );
+                        } catch (\Exception $exception) {
+                            $this->logger->error("Could not notify user: {$exception->getMessage()}");
+                        }
                     }
                 } elseif ($attachment->getDeleted()) {
                     return Response::createNotFound();
