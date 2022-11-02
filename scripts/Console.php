@@ -30,7 +30,7 @@ $downloadsPath = $factory->getConfig()->getConsoleTempPath();
 $userList = $factory->getConfig()->getUserListPath();
 
 $app = new Application();
-$app->add(new \JTL\Onetimelink\CLI\Command\GarbageCollectCommand($dataPath, $downloadsPath));
+$app->add(new \JTL\Onetimelink\CLI\Command\GarbageCollectCommand($dataPath));
 $app->add(new \JTL\Onetimelink\CLI\Command\DeleteResetHashesCommand($userList));
 
 try {

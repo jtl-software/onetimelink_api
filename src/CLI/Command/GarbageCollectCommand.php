@@ -40,15 +40,11 @@ class GarbageCollectCommand extends Command
     /** @var string */
     private $dataPath;
 
-    /** @var string */
-    private $downloadsPath;
-
-    public function __construct(string $dataPath, string $downloadsPath)
+    public function __construct(string $dataPath)
     {
         parent::__construct();
 
         $this->dataPath = $dataPath;
-        $this->downloadsPath = $downloadsPath;
     }
 
     /**
@@ -110,13 +106,13 @@ class GarbageCollectCommand extends Command
         $this->deleteOldLinks($output);
         $output->writeln("");
 
-        $output->writeln("data_expiration time is {$this->dataExpirationDays} days");
+        $output->writeln("Data Expiration time is {$this->dataExpirationDays} days");
         $this->deleteDataFiles($this->dataPath, $output);
         $output->writeln("");
 
         $output->writeln("#### Process finished");
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 
     /**
@@ -156,10 +152,8 @@ class GarbageCollectCommand extends Command
 
         /** @var OODBBean $upload */
         foreach ($uploads as $upload) {
-            $createdAt = new \DateTimeImmutable($upload->created);
-            $diff = (new \DateTime())->diff($createdAt);
-
-            if ($diff->days > $this->uploadTokenExpirationDays) {
+            $ageInSeconds = time() - (new \DateTimeImmutable($upload->created))->getTimestamp();
+            if ($ageInSeconds > ($this->uploadTokenExpirationDays * 24 * 60 * 60)) {
                 $output->writeln('Deleting upload token ' . $upload->token);
                 $uploadTokenList[] = $upload->token;
                 R::trash($upload);
@@ -178,34 +172,20 @@ class GarbageCollectCommand extends Command
             $hash = $attachment->hash;
             $shortHash = substr($hash, 0, 2);
             $dataFile = $path . '/' . $shortHash . '/' . $hash;
-            $links = $attachment->sharedLinkList;
-            $deletedLinks = 0;
 
-            foreach ($links as $link) {
-                if ($link->deleted) {
-                    ++$deletedLinks;
-                }
-            }
+            $ageInSeconds = time() - (new \DateTimeImmutable($attachment->created))->getTimestamp();
+            if ($ageInSeconds > ($this->dataExpirationDays * 24 * 60 * 60)) {
+                if (file_exists($dataFile)) {
+                    $output->writeln('Deleting temporary data file ' . $dataFile);
+                    unlink($dataFile);
 
-            $ctime = new \DateTimeImmutable($attachment->created);
-            $diff = (new \DateTime())->diff($ctime);
-
-            if ($diff->days > $this->dataExpirationDays) {
-                if ($attachment->name === '-#-TEXTINPUT-#-') {
-                    R::trash($attachment);
-                } else {
-                    if (file_exists($dataFile)) {
-                        $output->writeln('Deleting temporary data file ' . $dataFile);
-                        unlink($dataFile);
-                        R::trash($attachment);
-
-                        foreach ($links as $link) {
-                            $link->deleted = (new \DateTimeImmutable())->format('Y-m-d  H:i:s');
-                            R::store($link);
-                            $output->writeln('Marking link ' . $link->hash . ' as deleted.');
-                        }
+                    foreach ($attachment->sharedLinkList ?? [] as $link) {
+                        $link->deleted = (new \DateTimeImmutable())->format('Y-m-d  H:i:s');
+                        R::store($link);
+                        $output->writeln('Marking link ' . $link->hash . ' as deleted.');
                     }
                 }
+                R::trash($attachment);
             }
         }
 
