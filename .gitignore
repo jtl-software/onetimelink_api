@@ -6,3 +6,4 @@
 !/tests/integration-tests/_output/.gitkeep
 .php_cs.cache
 .env
+.phpunit.result.cache
